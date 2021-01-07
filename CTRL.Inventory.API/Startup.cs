@@ -63,6 +63,13 @@ namespace CTRL.Inventory.API
             });
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            services.AddCors(sp => sp.AddPolicy("StandardPolicy", builder =>
+            {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,6 +85,8 @@ namespace CTRL.Inventory.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("StandardPolicy");
 
             app.UseAuthorization();
 
