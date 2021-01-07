@@ -73,6 +73,8 @@ namespace CTRL.Inventory.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
