@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTRL.Portal.API
+namespace CTRL.Portal.API.EntityContexts
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
