@@ -1,12 +1,12 @@
-﻿using CTRL.Inventory.API.Contracts;
-using CTRL.Inventory.API.Services;
+﻿using CTRL.Portal.API.Contracts;
+using CTRL.Portal.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace CTRL.Inventory.API.Controllers
+namespace CTRL.Portal.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

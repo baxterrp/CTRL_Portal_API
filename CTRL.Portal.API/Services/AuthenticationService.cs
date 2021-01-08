@@ -1,5 +1,5 @@
-﻿using CTRL.Inventory.API.Configuration;
-using CTRL.Inventory.API.Contracts;
+﻿using CTRL.Portal.API.Configuration;
+using CTRL.Portal.API.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,7 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CTRL.Inventory.API.Services
+namespace CTRL.Portal.API.Services
 {
     public class AuthenticationService : IAuthenticationService
     {

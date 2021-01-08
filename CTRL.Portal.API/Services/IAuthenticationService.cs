@@ -1,7 +1,7 @@
-﻿using CTRL.Inventory.API.Contracts;
+﻿using CTRL.Portal.API.Contracts;
 using System.Threading.Tasks;
 
-namespace CTRL.Inventory.API.Services
+namespace CTRL.Portal.API.Services
 {
     public interface IAuthenticationService
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace CTRL.Inventory.API.Contracts
+namespace CTRL.Portal.API.Contracts
 {
     public class ApiResponseContract
     {

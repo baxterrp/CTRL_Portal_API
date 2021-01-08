@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace CTRL.Inventory.API
+namespace CTRL.Portal.API
 {
     public class Program
     {

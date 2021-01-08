@@ -1,4 +1,4 @@
-﻿namespace CTRL.Inventory.API.Configuration
+﻿namespace CTRL.Portal.API.Configuration
 {
     public class AuthenticationConfiguration
     {

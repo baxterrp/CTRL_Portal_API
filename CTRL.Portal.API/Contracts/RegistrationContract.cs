@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTRL.Inventory.API.Contracts
+namespace CTRL.Portal.API.Contracts
 {
     public class RegistrationContract
     {

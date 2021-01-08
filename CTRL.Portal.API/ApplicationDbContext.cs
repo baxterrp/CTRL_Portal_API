@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTRL.Inventory.API
+namespace CTRL.Portal.API
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

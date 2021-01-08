@@ -1,5 +1,5 @@
-using CTRL.Inventory.API.Configuration;
-using CTRL.Inventory.API.Services;
+using CTRL.Portal.API.Configuration;
+using CTRL.Portal.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace CTRL.Inventory.API
+namespace CTRL.Portal.API
 {
     public class Startup
     {
