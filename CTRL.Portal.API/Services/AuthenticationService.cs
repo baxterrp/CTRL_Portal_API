@@ -47,7 +47,7 @@ namespace CTRL.Portal.API.Services
                     _authenticationConfiguration.ValidIssuer,
                     _authenticationConfiguration.ValidAudience,
                     authClaims,
-                    expires: DateTime.Now.AddYears(1),
+                    expires: DateTime.Now.Add(TimeSpan.Parse(_authenticationConfiguration.Expires)),
                     signingCredentials: new SigningCredentials(authSignInKey, SecurityAlgorithms.HmacSha256));
 
                return new AuthenticationResponseContract
