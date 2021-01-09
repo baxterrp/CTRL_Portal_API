@@ -352,3 +352,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /CTRL.Inventory.API/Properties/ServiceDependencies/ctrl-dev-user-portal - Web Deploy/profile.arm.json
+/CTRL.Portal.API/Properties/ServiceDependencies/ctrl-dev-user-portal - Web Deploy/profile.arm.json
