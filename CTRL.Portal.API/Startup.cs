@@ -1,5 +1,6 @@
 using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.EntityContexts;
+using CTRL.Portal.API.Middleware;
 using CTRL.Portal.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -90,6 +91,8 @@ namespace CTRL.Portal.API
             app.UseCors("StandardPolicy");
 
             app.UseAuthorization();
+            
+            app.UseMiddleware(typeof(ApiMiddleware));
 
             app.UseEndpoints(endpoints =>
             {

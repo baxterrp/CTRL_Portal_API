@@ -1,9 +1,7 @@
 ﻿using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Controllers
@@ -22,43 +20,17 @@ namespace CTRL.Portal.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationContract registrationContract)
         {
-            try
-            {
-                await _authenticationService.Register(registrationContract);
+            await _authenticationService.Register(registrationContract);
 
-                return Ok(new ApiResponseContract
-                {
-                    Status = HttpStatusCode.OK,
-                    Message = "User created successfully"
-                });
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponseContract
-                {
-                    Status = HttpStatusCode.InternalServerError,
-                    Message = "An unhandled error occured"
-                });
-            }
+            return Ok();
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginContract loginContract)
         {
-            try
-            {
-                var response = await _authenticationService.Login(loginContract);
+            var response = await _authenticationService.Login(loginContract);
 
-                return StatusCode((int)response.Status, response);
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponseContract
-                {
-                    Status = HttpStatusCode.InternalServerError,
-                    Message = "An unhandled error occured"
-                });
-            }
+            return StatusCode((int)response.Status, response);
         }
     }
 }

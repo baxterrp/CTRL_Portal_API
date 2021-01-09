@@ -1,6 +1,7 @@
 ﻿using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
+using CTRL.Portal.API.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -59,11 +60,7 @@ namespace CTRL.Portal.API.Services
                 };
             }
 
-            return new AuthenticationResponseContract
-            {
-                Message = "Unauthorized login attempt",
-                Status = HttpStatusCode.Unauthorized
-            };
+            throw new InvalidLoginAttemptException("Invalid credentials given");
         }
 
         public async Task Register(RegistrationContract registrationContract)
@@ -87,7 +84,15 @@ namespace CTRL.Portal.API.Services
 
             var result = await _userManager.CreateAsync(user, registrationContract.Password);
 
-            if (!result.Succeeded) throw new InvalidOperationException("An error occured creating user");
+            if (!result?.Succeeded ?? false)
+            {
+                if (result?.Errors?.Any() ?? false)
+                {
+                    throw new InvalidOperationException(string.Join(",", result.Errors.Select(e => e.Description)));
+                }
+
+                throw new InvalidOperationException("Unhandled error happened creating user");
+            }
         }
     }
 }
