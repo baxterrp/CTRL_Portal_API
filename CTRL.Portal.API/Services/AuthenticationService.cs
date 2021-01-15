@@ -3,6 +3,7 @@ using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Exceptions;
+using CTRL.Portal.Data.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -20,13 +21,16 @@ namespace CTRL.Portal.API.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AuthenticationConfiguration _authenticationConfiguration;
+        private readonly IAccountService _accountService;
 
         public AuthenticationService(
-            UserManager<ApplicationUser> userManager,
-            AuthenticationConfiguration authenticationConfiguration)
+            UserManager<ApplicationUser> userManager, 
+            AuthenticationConfiguration authenticationConfiguration, 
+            IAccountService accountService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _authenticationConfiguration = authenticationConfiguration ?? throw new ArgumentNullException(nameof(authenticationConfiguration));
+            _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         }
 
         public async Task<AuthenticationResponseContract> Login(LoginContract loginContract)
@@ -46,12 +50,15 @@ namespace CTRL.Portal.API.Services
 
                 authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
+                var accounts = await _accountService.GetAccounts(user.UserName);
+
                 return new AuthenticationResponseContract
                 {
                     Message = ApiMessages.LoginSuccessful,
                     Status = HttpStatusCode.OK,
                     Token = new JwtSecurityTokenHandler().WriteToken(GenerateToken(authClaims)),
-                    UserName = loginContract.UserName
+                    UserName = loginContract.UserName,
+                    Accounts = accounts ?? new List<AccountDisplay>()
                 };
             }
 

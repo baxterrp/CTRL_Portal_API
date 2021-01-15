@@ -1,5 +1,6 @@
 ﻿using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.Exceptions;
+using CTRL.Portal.Data.DataExceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -62,6 +63,9 @@ namespace CTRL.Portal.API.Middleware
                     break;
                 case InvalidLoginAttemptException _:
                     code = HttpStatusCode.Unauthorized;
+                    break;
+                case ResourceNotFoundException _:
+                    code = HttpStatusCode.NotFound;
                     break;
                 default:
                     code = HttpStatusCode.InternalServerError;

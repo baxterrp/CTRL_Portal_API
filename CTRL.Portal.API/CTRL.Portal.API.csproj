@@ -17,5 +17,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CTRL.Portal.Data\CTRL.Portal.Data.csproj" />
+  </ItemGroup>
+
 
 </Project>

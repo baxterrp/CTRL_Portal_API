@@ -2,6 +2,8 @@ using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Middleware;
 using CTRL.Portal.API.Services;
+using CTRL.Portal.Data.Configuration;
+using CTRL.Portal.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,9 +37,15 @@ namespace CTRL.Portal.API
             services.AddSingleton(authConfig);
 
             var connectionString = Configuration.GetConnectionString("CTRL_Connection");
+            var dbConfig = new DatabaseConfiguration
+            {
+                ConnectionString = connectionString
+            };
+            services.AddSingleton(dbConfig);
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("Ctrl_Connection"));
+                options.UseSqlServer(connectionString);
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -65,6 +73,9 @@ namespace CTRL.Portal.API
             });
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IAccountService, AccountService>();
+            services.AddSingleton<IAccountRepository, AccountRepository>();
 
             services.AddCors(sp => sp.AddPolicy("StandardPolicy", builder =>
             {
