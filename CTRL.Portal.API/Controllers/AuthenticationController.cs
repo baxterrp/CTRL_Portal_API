@@ -26,11 +26,7 @@ namespace CTRL.Portal.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginContract loginContract)
-        {
-            var response = await _authenticationService.Login(loginContract);
-
-            return StatusCode((int)response.Status, response);
-        }
+        public async Task<IActionResult> Login([FromBody] LoginContract loginContract) =>
+            Ok(await _authenticationService.Login(loginContract));
     }
 }

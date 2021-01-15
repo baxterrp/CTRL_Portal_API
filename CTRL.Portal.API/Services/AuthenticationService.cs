@@ -1,7 +1,9 @@
-﻿using CTRL.Portal.API.Configuration;
+﻿using CTRL.Portal.API.APIConstants;
+using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Exceptions;
+using CTRL.Portal.Data.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -19,17 +21,22 @@ namespace CTRL.Portal.API.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AuthenticationConfiguration _authenticationConfiguration;
+        private readonly IAccountService _accountService;
 
         public AuthenticationService(
             UserManager<ApplicationUser> userManager, 
-            AuthenticationConfiguration authenticationConfiguration)
+            AuthenticationConfiguration authenticationConfiguration, 
+            IAccountService accountService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _authenticationConfiguration = authenticationConfiguration ?? throw new ArgumentNullException(nameof(authenticationConfiguration));
+            _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         }
 
         public async Task<AuthenticationResponseContract> Login(LoginContract loginContract)
         {
+            ValidateOnLogin(loginContract);
+
             var user = await _userManager.FindByNameAsync(loginContract.UserName);
 
             if (user != null && await _userManager.CheckPasswordAsync(user, loginContract.Password))
@@ -43,37 +50,27 @@ namespace CTRL.Portal.API.Services
 
                 authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-                var authSignInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationConfiguration.Secret));
-                var token = new JwtSecurityToken(
-                    _authenticationConfiguration.ValidIssuer,
-                    _authenticationConfiguration.ValidAudience,
-                    authClaims,
-                    expires: DateTime.Now.Add(TimeSpan.Parse(_authenticationConfiguration.Expires)),
-                    signingCredentials: new SigningCredentials(authSignInKey, SecurityAlgorithms.HmacSha256));
+                var accounts = await _accountService.GetAccounts(user.UserName);
 
-               return new AuthenticationResponseContract
+                return new AuthenticationResponseContract
                 {
-                    Message = "Successfully logged in",
+                    Message = ApiMessages.LoginSuccessful,
                     Status = HttpStatusCode.OK,
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    UserName = loginContract.UserName
+                    Token = new JwtSecurityTokenHandler().WriteToken(GenerateToken(authClaims)),
+                    UserName = loginContract.UserName,
+                    Accounts = accounts ?? new List<AccountDisplay>()
                 };
             }
 
-            throw new InvalidLoginAttemptException("Invalid credentials given");
+            throw new InvalidLoginAttemptException(ApiMessages.InvalidCredentials);
         }
 
         public async Task Register(RegistrationContract registrationContract)
         {
-            if (registrationContract is null ||
-                string.IsNullOrWhiteSpace(registrationContract.UserName) ||
-                string.IsNullOrWhiteSpace(registrationContract.Email) ||
-                string.IsNullOrWhiteSpace(registrationContract.Password))
-                throw new ArgumentException(nameof(registrationContract));
+            ValidateOnRegister(registrationContract);
 
-            var userExists = await _userManager.FindByNameAsync(registrationContract.UserName);
-
-            if (userExists != null) throw new InvalidOperationException("User with that name already exists");
+            if((await _userManager.FindByNameAsync(registrationContract.UserName) != null))
+                throw new InvalidOperationException(ApiMessages.UserAlreadyExists);
 
             var user = new ApplicationUser
             {
@@ -91,8 +88,34 @@ namespace CTRL.Portal.API.Services
                     throw new InvalidOperationException(string.Join(",", result.Errors.Select(e => e.Description)));
                 }
 
-                throw new InvalidOperationException("Unhandled error happened creating user");
+                throw new InvalidOperationException(ApiMessages.UnhandledErrorCreatingUser);
             }
+        }
+
+        private JwtSecurityToken GenerateToken(List<Claim> authClaims)
+        {
+            var authSignInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationConfiguration.Secret));
+            return new JwtSecurityToken(
+                _authenticationConfiguration.ValidIssuer,
+                _authenticationConfiguration.ValidAudience,
+                authClaims,
+                expires: DateTime.Now.Add(TimeSpan.Parse(_authenticationConfiguration.Expires)),
+                signingCredentials: new SigningCredentials(authSignInKey, SecurityAlgorithms.HmacSha256));
+        }
+
+        private static void ValidateOnLogin(LoginContract loginContract)
+        {
+            if (loginContract is null 
+                ||string.IsNullOrWhiteSpace(loginContract.UserName)
+                ||string.IsNullOrWhiteSpace(loginContract.Password)) throw new ArgumentException(nameof(loginContract));
+        }
+
+        private static void ValidateOnRegister(RegistrationContract registrationContract)
+        {
+            if (registrationContract is null 
+                ||string.IsNullOrWhiteSpace(registrationContract.UserName) 
+                ||string.IsNullOrWhiteSpace(registrationContract.Email) 
+                ||string.IsNullOrWhiteSpace(registrationContract.Password)) throw new ArgumentException(nameof(registrationContract));
         }
     }
 }
