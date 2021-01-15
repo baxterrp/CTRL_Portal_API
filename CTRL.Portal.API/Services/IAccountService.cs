@@ -7,7 +7,7 @@ namespace CTRL.Portal.API.Services
 {
     public interface IAccountService
     {
-        Task AddAccount(CreateAccountContract createAccountContract);
+        Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract);
         Task<IEnumerable<AccountDisplay>> GetAccounts(string userName);
     }
 }

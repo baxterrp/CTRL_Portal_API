@@ -16,13 +16,21 @@ namespace CTRL.Portal.API.Services
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
         }
 
-        public async Task AddAccount(CreateAccountContract createAccountContract)
+        public async Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract)
         {
+            var accountId = Guid.NewGuid().ToString();
+
             await _accountRepository.AddAccount(createAccountContract.UserName, new AccountDisplay
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = accountId,
                 Name = createAccountContract.Name
             });
+
+            return new AccountDisplay
+            {
+                Id = accountId,
+                Name = createAccountContract.Name
+            };
         }
 
         public async Task<IEnumerable<AccountDisplay>> GetAccounts(string userName)

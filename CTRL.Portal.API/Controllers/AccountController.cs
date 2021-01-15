@@ -22,9 +22,9 @@ namespace CTRL.Portal.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody]CreateAccountContract createAccountContract)
         {
-            await _accountService.AddAccount(createAccountContract);
+            var account = await _accountService.AddAccount(createAccountContract);
 
-            return Ok();
+            return Ok(account);
         }
     }
 }
