@@ -15,7 +15,7 @@ namespace CTRL.Portal.API.CustomMigrations
         {
             Create.Table("UserSettings")
                 .WithColumn("Id").AsInt32().NotNullable().PrimaryKey().Identity(1, 1)
-                .WithColumn("Theme").AsString().NotNullable()
+                .WithColumn("Theme").AsString().Nullable()
                 .WithColumn("UserName").AsString().NotNullable();
         }
     }

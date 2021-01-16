@@ -23,8 +23,7 @@ namespace CTRL.Portal.API.Services
         public async Task SaveSettings(UserSettings userSettings)
         {
             if (userSettings is null
-                || string.IsNullOrWhiteSpace(userSettings?.UserName)
-                || string.IsNullOrWhiteSpace(userSettings?.Theme))
+                || string.IsNullOrWhiteSpace(userSettings?.UserName))
             throw new ArgumentException(nameof(userSettings));
 
             await _userSettingsRepository.SaveSettings(userSettings);

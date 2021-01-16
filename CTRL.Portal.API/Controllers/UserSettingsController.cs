@@ -20,11 +20,10 @@ namespace CTRL.Portal.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveSettings([FromBody]UserSettings userSettings)
+        public async Task<IActionResult> SaveSettings([FromBody] UserSettings userSettings)
         {
             if (userSettings is null ||
-                string.IsNullOrWhiteSpace(userSettings?.UserName) ||
-                string.IsNullOrWhiteSpace(userSettings?.Theme))
+                string.IsNullOrWhiteSpace(userSettings?.UserName))
                 throw new ArgumentException(nameof(userSettings));
 
             await _userSettingsService.SaveSettings(userSettings);

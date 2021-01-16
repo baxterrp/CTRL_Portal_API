@@ -96,7 +96,7 @@ namespace CTRL.Portal.API.Services
             var saveSettingsResult = _userSettingsService.SaveSettings(new UserSettings
             {
                 UserName = user.UserName,
-                Theme = Themes.Light
+                Theme = null
             });
 
             List<Task> tasks = new List<Task>
