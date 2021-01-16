@@ -8,5 +8,6 @@ namespace CTRL.Portal.API.Contracts
         public string Token { get; set; }
         public string UserName { get; set; }
         public IEnumerable<AccountDisplay> Accounts { get; set; }
+        public UserSettings UserSettings { get; set; }
     }
 }

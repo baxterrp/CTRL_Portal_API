@@ -2,6 +2,15 @@
 {
     public class SqlQueries
     {
+        public static readonly string GetUserSettings = "SELECT * FROM UserSettings WHERE [UserName] = @UserName";
+        public static readonly string SaveUserSettings =
+            @"IF EXISTS (SELECT * FROM UserSettings WHERE [UserName] = @UserName)
+                UPDATE UserSettings
+                    SET [Theme] = @Theme
+                WHERE [UserName] = @UserName;
+            ELSE
+                INSERT INTO UserSettings (UserName, Theme) VALUES (@UserName, @Theme)
+            ";
         public static readonly string AddAccountQuery = "INSERT INTO accounts (id, name) VALUES (@Id, @Name)";
         public static readonly string AddAccountToUser = "INSERT INTO UserAccounts (UserName, AccountId) VALUES (@UserName, @AccountId)";
         public static readonly string GetAllAccountsQuery =

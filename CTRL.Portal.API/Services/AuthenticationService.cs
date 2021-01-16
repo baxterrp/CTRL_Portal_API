@@ -22,15 +22,18 @@ namespace CTRL.Portal.API.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AuthenticationConfiguration _authenticationConfiguration;
         private readonly IAccountService _accountService;
+        private readonly IUserSettingsService _userSettingsService;
 
         public AuthenticationService(
             UserManager<ApplicationUser> userManager, 
             AuthenticationConfiguration authenticationConfiguration, 
-            IAccountService accountService)
+            IAccountService accountService, 
+            IUserSettingsService userSettingsService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _authenticationConfiguration = authenticationConfiguration ?? throw new ArgumentNullException(nameof(authenticationConfiguration));
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
+            _userSettingsService = userSettingsService ?? throw new ArgumentNullException(nameof(userSettingsService));
         }
 
         public async Task<AuthenticationResponseContract> Login(LoginContract loginContract)
@@ -50,7 +53,16 @@ namespace CTRL.Portal.API.Services
 
                 authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-                var accounts = await _accountService.GetAccounts(user.UserName);
+                var accountResponse = _accountService.GetAccounts(user.UserName);
+                var userSettingsResponse = _userSettingsService.GetUserSettings(user.UserName);
+
+                List<Task> tasks = new List<Task>
+                {
+                    accountResponse,
+                    userSettingsResponse
+                };
+
+                await Task.WhenAll(tasks);
 
                 return new AuthenticationResponseContract
                 {
@@ -58,7 +70,8 @@ namespace CTRL.Portal.API.Services
                     Status = HttpStatusCode.OK,
                     Token = new JwtSecurityTokenHandler().WriteToken(GenerateToken(authClaims)),
                     UserName = loginContract.UserName,
-                    Accounts = accounts ?? new List<AccountDisplay>()
+                    UserSettings = userSettingsResponse?.IsCompletedSuccessfully ?? false ? userSettingsResponse.Result : null,
+                    Accounts = accountResponse?.IsCompletedSuccessfully ?? false ? accountResponse.Result : new List<AccountDisplay>()
                 };
             }
 
@@ -79,13 +92,27 @@ namespace CTRL.Portal.API.Services
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 
-            var result = await _userManager.CreateAsync(user, registrationContract.Password);
-
-            if (!result?.Succeeded ?? false)
+            var createUserResult = _userManager.CreateAsync(user, registrationContract.Password);
+            var saveSettingsResult = _userSettingsService.SaveSettings(new UserSettings
             {
-                if (result?.Errors?.Any() ?? false)
+                UserName = user.UserName,
+                Theme = Themes.Light
+            });
+
+            List<Task> tasks = new List<Task>
+            {
+                createUserResult,
+                saveSettingsResult
+            };
+
+            await Task.WhenAll(tasks);
+
+            if (!createUserResult?.Result?.Succeeded ?? true)
+            {
+                if (createUserResult?.Result?.Errors?.Any() ?? true)
                 {
-                    throw new InvalidOperationException(string.Join(",", result.Errors.Select(e => e.Description)));
+                    throw new InvalidOperationException(string.Join(",", 
+                        createUserResult?.Result?.Errors?.Select(e => e.Description) ?? new List<string> { ApiMessages.UnhandledErrorCreatingUser }));
                 }
 
                 throw new InvalidOperationException(ApiMessages.UnhandledErrorCreatingUser);

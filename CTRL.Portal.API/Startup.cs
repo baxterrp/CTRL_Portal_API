@@ -102,6 +102,8 @@ namespace CTRL.Portal.API
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IAccountService, AccountService>();
             services.AddSingleton<IAccountRepository, AccountRepository>();
+            services.AddSingleton<IUserSettingsService, UserSettingsService>();
+            services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
 
             services.AddCors(sp => sp.AddPolicy("StandardPolicy", builder =>
             {
