@@ -26,5 +26,13 @@ namespace CTRL.Portal.API.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("{userName}")]
+        public async Task<IActionResult> DeleteUser([FromRoute]string userName)
+        {
+            await _userService.DeleteUser(userName);
+
+            return Ok();
+        }
     }
 }
