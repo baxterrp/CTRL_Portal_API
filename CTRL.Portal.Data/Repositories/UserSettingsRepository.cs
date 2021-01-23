@@ -29,7 +29,13 @@ namespace CTRL.Portal.Data.Repositories
         public async Task SaveSettings(UserSettings userSettings)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            await connection.ExecuteAsync(SqlQueries.SaveUserSettings, new { UserName = userSettings.UserName, Theme = userSettings.Theme });
+            await connection.ExecuteAsync(SqlQueries.SaveUserSettings, 
+                new 
+                { 
+                    UserName = userSettings.UserName, 
+                    Theme = userSettings.Theme,
+                    DefaultAccount = userSettings.DefaultAccount
+                });
         }
     }
 }

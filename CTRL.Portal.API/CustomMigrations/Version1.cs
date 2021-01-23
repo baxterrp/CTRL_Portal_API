@@ -3,7 +3,7 @@ using FluentMigrator.SqlServer;
 
 namespace CTRL.Portal.API.CustomMigrations
 {
-    [Migration(01152021)]
+    [Migration(1)]
     public class Version1 : Migration
     {
         public override void Down()

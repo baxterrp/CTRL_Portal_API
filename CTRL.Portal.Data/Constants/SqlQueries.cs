@@ -6,10 +6,11 @@
         public static readonly string SaveUserSettings =
             @"IF EXISTS (SELECT * FROM UserSettings WHERE [UserName] = @UserName)
                 UPDATE UserSettings
-                    SET [Theme] = @Theme
+                    SET [Theme] = @Theme,
+                        [DefaultAccount] = @DefaultAccount
                 WHERE [UserName] = @UserName;
             ELSE
-                INSERT INTO UserSettings (UserName, Theme) VALUES (@UserName, @Theme)
+                INSERT INTO UserSettings (UserName, Theme, DefaultAccount) VALUES (@UserName, @Theme, @DefaultAccount)
             ";
         public static readonly string AddAccountQuery = "INSERT INTO accounts (id, name) VALUES (@Id, @Name)";
         public static readonly string AddAccountToUser = "INSERT INTO UserAccounts (UserName, AccountId) VALUES (@UserName, @AccountId)";
