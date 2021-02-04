@@ -1,4 +1,3 @@
-
 using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Middleware;
@@ -55,6 +54,11 @@ namespace CTRL.Portal.API
         {
             services.AddControllers();
 
+            var emailConfig = new EmailConfiguration();
+            var appSettingsEmailConfig = Configuration.GetSection("EmailConfiguration");
+            appSettingsEmailConfig.Bind(emailConfig);
+            services.AddSingleton(emailConfig);
+
             var authConfig = new AuthenticationConfiguration();
             var appSettingsAuthConfig = Configuration.GetSection("JWT");
             appSettingsAuthConfig.Bind(authConfig);
@@ -104,6 +108,7 @@ namespace CTRL.Portal.API
             services.AddSingleton<IAccountRepository, AccountRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();
             services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
+            services.AddSingleton<IEmailProvider, EmailProvider>();
 
             services.AddCors(sp => sp.AddPolicy("StandardPolicy", builder =>
             {
