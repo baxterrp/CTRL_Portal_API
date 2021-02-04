@@ -52,7 +52,11 @@ namespace CTRL.Portal.API.Services
 
         private void ValidateEmail(EmailContract email)
         {
-            
+            if (email is null) throw new ArgumentException(nameof(email));
+            if (string.IsNullOrWhiteSpace(email.Header)) throw new ArgumentException(nameof(email.Header));
+            if (string.IsNullOrWhiteSpace(email.Message)) throw new ArgumentException(nameof(email.Message));
+            if (string.IsNullOrWhiteSpace(email.Name)) throw new ArgumentException(nameof(email.Name));
+            if (string.IsNullOrWhiteSpace(email.Recipient)) throw new ArgumentException(nameof(email.Recipient));
         }
     }
 }
