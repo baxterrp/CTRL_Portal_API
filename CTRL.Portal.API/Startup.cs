@@ -109,6 +109,7 @@ namespace CTRL.Portal.API
             services.AddSingleton<IUserSettingsService, UserSettingsService>();
             services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
             services.AddSingleton<IEmailProvider, EmailProvider>();
+            services.AddSingleton<IUtilityManager, UtilityManager>();
 
             services.AddCors(sp => sp.AddPolicy("StandardPolicy", builder =>
             {
