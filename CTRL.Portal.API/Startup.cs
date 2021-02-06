@@ -1,3 +1,4 @@
+using CTRL.Portal.API.APIConstants;
 using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Middleware;
@@ -5,18 +6,14 @@ using CTRL.Portal.API.Services;
 using CTRL.Portal.Data.Configuration;
 using CTRL.Portal.Data.Repositories;
 using FluentMigrator.Runner;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Linq;
-using System.Text;
 
 namespace CTRL.Portal.API
 {
@@ -64,6 +61,13 @@ namespace CTRL.Portal.API
             appSettingsAuthConfig.Bind(authConfig);
             services.AddSingleton(authConfig);
 
+            services.AddTransient(sp => new AuthenticationParameters
+            {
+                Issuer = authConfig.ValidIssuer,
+                Audience = authConfig.ValidAudience,
+                Key = authConfig.Secret
+            });
+
             var connectionString = Configuration.GetConnectionString("CTRL_Connection");
             var dbConfig = new DatabaseConfiguration
             {
@@ -82,26 +86,16 @@ namespace CTRL.Portal.API
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters
+            services
+                .AddAuthentication(options =>
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = authConfig.ValidAudience,
-                    ValidIssuer = authConfig.ValidIssuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfig.Secret))
-                };
-            });
+                    options.DefaultAuthenticateScheme = ApiNames.ApiAuthenticationScheme;
+                    options.DefaultChallengeScheme = ApiNames.ApiAuthenticationScheme;
+                    options.DefaultSignInScheme = ApiNames.ApiAuthenticationScheme;
+                })
+                .AddScheme<ApiAuthenticationOptions, ApiAuthenticationHandler>(ApiNames.ApiAuthenticationScheme, "Api Authenticaiton", null);
 
+            services.AddTransient<IAuthenticationTokenManager, AuthenticationTokenManager>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IAccountService, AccountService>();
@@ -123,23 +117,12 @@ namespace CTRL.Portal.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner runner)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseAuthentication();
-
-            app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseCors("StandardPolicy");
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseMiddleware(typeof(ApiMiddleware));
-
+            app.UseHttpsRedirection();
+            app.UseMiddleware(typeof(ApiPortalMiddleware));
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

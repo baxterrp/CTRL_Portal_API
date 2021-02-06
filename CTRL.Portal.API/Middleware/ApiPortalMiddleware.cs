@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Middleware
 {
-    public class ApiMiddleware
+    public class ApiPortalMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public ApiMiddleware(RequestDelegate next)
+        public ApiPortalMiddleware(RequestDelegate next)
         {
             _next = next;
         }
