@@ -18,13 +18,13 @@ namespace CTRL.Portal.API.Middleware
     {
         private readonly IAuthenticationTokenManager _authenticationTokenManager;
         private const string _cookieName = "IdentityCookie";
-        
+
         public ApiAuthenticationHandler(
             IAuthenticationTokenManager authenticationTokenManager,
-            IOptionsMonitor<ApiAuthenticationOptions> options, 
-            ILoggerFactory logger, 
-            UrlEncoder encoder, 
-            ISystemClock clock) 
+            IOptionsMonitor<ApiAuthenticationOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
             _authenticationTokenManager = authenticationTokenManager ?? throw new ArgumentNullException(nameof(authenticationTokenManager));
@@ -34,31 +34,36 @@ namespace CTRL.Portal.API.Middleware
         {
             try
             {
-                if (!Request.Headers.ContainsKey(_cookieName))
+                if (!Request.Path.ToUriComponent().StartsWith("/api/authentication"))
                 {
-                    return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                    if (!Request.Headers.ContainsKey(_cookieName))
+                    {
+                        return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                    }
+
+                    string stringCookie = Request.Headers[_cookieName];
+                    var identityCookie = JsonConvert.DeserializeObject<IdentityCookie>(stringCookie);
+
+                    IPrincipal principal = _authenticationTokenManager.ValidateToken(identityCookie.Token);
+                    if (principal is null)
+                    {
+                        return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                    }
+
+                    var parsedToken = new JwtSecurityTokenHandler().ReadJwtToken(identityCookie.Token);
+                    var expectedUserName = parsedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name && c.Value == identityCookie.UserName)?.Value ?? string.Empty;
+
+                    if (expectedUserName != identityCookie.UserName)
+                    {
+                        return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                    }
+
+                    var ticket = new AuthenticationTicket(principal as ClaimsPrincipal, ApiNames.ApiAuthenticationScheme);
+
+                    return AuthenticateResult.Success(ticket);
                 }
 
-                string stringCookie = Request.Headers[_cookieName];
-                var identityCookie = JsonConvert.DeserializeObject<IdentityCookie>(stringCookie);
-
-                IPrincipal principal = _authenticationTokenManager.ValidateToken(identityCookie.Token);
-                if(principal is null)
-                {
-                    return AuthenticateResult.Fail(ApiMessages.Unauthorized);
-                }
-                
-                var parsedToken = new JwtSecurityTokenHandler().ReadJwtToken(identityCookie.Token);
-                var expectedUserName = parsedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name && c.Value == identityCookie.UserName)?.Value ?? string.Empty;
-
-                if (expectedUserName != identityCookie.UserName)
-                {
-                    return AuthenticateResult.Fail(ApiMessages.Unauthorized);
-                }
-
-                var ticket = new AuthenticationTicket(principal as ClaimsPrincipal, ApiNames.ApiAuthenticationScheme);
-
-                return AuthenticateResult.Success(ticket);
+                return AuthenticateResult.NoResult();
             }
             catch
             {
