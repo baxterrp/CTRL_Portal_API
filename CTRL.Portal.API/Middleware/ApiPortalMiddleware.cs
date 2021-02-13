@@ -31,7 +31,7 @@ namespace CTRL.Portal.API.Middleware
             }
         }
 
-        private async Task WriteHttpContextResponse(HttpContext httpContext, Exception exception)
+        private static async Task WriteHttpContextResponse(HttpContext httpContext, Exception exception)
         {
             httpContext.Response.ContentType = MediaTypeNames.Application.Json;
             httpContext.Response.StatusCode = GetHttpStatusCode(exception);
@@ -48,31 +48,14 @@ namespace CTRL.Portal.API.Middleware
             await httpContext.Response.WriteAsync(stringifiedApiException);
         }
 
-        private int GetHttpStatusCode(Exception exception)
-        {
-            HttpStatusCode code;
-
-            switch (exception)
+        private static int GetHttpStatusCode(Exception exception) =>
+            (int)(exception switch
             {
-                case ArgumentNullException _:
-                case ArgumentException _:
-                    code = HttpStatusCode.BadRequest;
-                    break;
-                case InvalidOperationException _:
-                    code = HttpStatusCode.Conflict;
-                    break;
-                case InvalidLoginAttemptException _:
-                    code = HttpStatusCode.Unauthorized;
-                    break;
-                case ResourceNotFoundException _:
-                    code = HttpStatusCode.NotFound;
-                    break;
-                default:
-                    code = HttpStatusCode.InternalServerError;
-                    break;
-            }
-
-            return (int)code;
-        }
+                ArgumentNullException _ or ArgumentException _ => HttpStatusCode.BadRequest,
+                InvalidOperationException _ => HttpStatusCode.Conflict,
+                InvalidLoginAttemptException _ => HttpStatusCode.Unauthorized,
+                ResourceNotFoundException _ => HttpStatusCode.NotFound,
+                _ => HttpStatusCode.InternalServerError,
+            });
     }
 }

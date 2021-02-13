@@ -30,7 +30,7 @@ namespace CTRL.Portal.API.Middleware
             _authenticationTokenManager = authenticationTokenManager ?? throw new ArgumentNullException(nameof(authenticationTokenManager));
         }
 
-        protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace CTRL.Portal.API.Middleware
                 {
                     if (!Request.Headers.ContainsKey(_cookieName))
                     {
-                        return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                        return Task.FromResult(AuthenticateResult.Fail(ApiMessages.Unauthorized));
                     }
 
                     string stringCookie = Request.Headers[_cookieName];
@@ -47,7 +47,7 @@ namespace CTRL.Portal.API.Middleware
                     IPrincipal principal = _authenticationTokenManager.ValidateToken(identityCookie.Token);
                     if (principal is null)
                     {
-                        return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                        return Task.FromResult(AuthenticateResult.Fail(ApiMessages.Unauthorized));
                     }
 
                     var parsedToken = new JwtSecurityTokenHandler().ReadJwtToken(identityCookie.Token);
@@ -55,19 +55,19 @@ namespace CTRL.Portal.API.Middleware
 
                     if (expectedUserName != identityCookie.UserName)
                     {
-                        return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                        return Task.FromResult(AuthenticateResult.Fail(ApiMessages.Unauthorized));
                     }
 
                     var ticket = new AuthenticationTicket(principal as ClaimsPrincipal, ApiNames.ApiAuthenticationScheme);
 
-                    return AuthenticateResult.Success(ticket);
+                    return Task.FromResult(AuthenticateResult.Success(ticket));
                 }
 
-                return AuthenticateResult.NoResult();
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
             catch
             {
-                return AuthenticateResult.Fail(ApiMessages.Unauthorized);
+                return Task.FromResult(AuthenticateResult.Fail(ApiMessages.Unauthorized));
             }
         }
     }
