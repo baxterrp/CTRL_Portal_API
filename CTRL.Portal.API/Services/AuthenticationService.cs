@@ -54,7 +54,7 @@ namespace CTRL.Portal.API.Services
                 authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
                 var accountResponse = _accountService.GetAccounts(user.UserName);
-                var userSettingsResponse = _userSettingsService.GetUserSettings(user.UserName);
+                var userSettingsResponse = _userSettingsService.GetUserSettings(user.UserName);      //get the string userName that goes in the GetUserSettings()
 
                 List<Task> tasks = new List<Task>
                 {
@@ -93,7 +93,7 @@ namespace CTRL.Portal.API.Services
             };
 
             var createUserResult = _userManager.CreateAsync(user, registrationContract.Password);
-            var saveSettingsResult = _userSettingsService.SaveSettings(new UserSettings
+            var saveSettingsResult = _userSettingsService.SaveSettings(new UserSettings             ///create a new UserSettings object
             {
                 UserName = user.UserName,
                 Theme = null
