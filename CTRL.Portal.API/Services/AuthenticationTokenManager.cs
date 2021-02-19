@@ -1,18 +1,36 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using CTRL.Portal.API.Configuration;
+using CTRL.Portal.API.Contracts;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 
-namespace CTRL.Portal.API.Middleware
+namespace CTRL.Portal.API.Services
 {
     public class AuthenticationTokenManager : IAuthenticationTokenManager
     {
         private readonly AuthenticationParameters _authenticationParameters;
+        private readonly AuthenticationConfiguration _authenticationConfiguration;
 
-        public AuthenticationTokenManager(AuthenticationParameters authenticationParameters)
+        public AuthenticationTokenManager(AuthenticationParameters authenticationParameters, AuthenticationConfiguration authenticationConfiguration)
         {
             _authenticationParameters = authenticationParameters ?? throw new ArgumentNullException(nameof(authenticationParameters));
+            _authenticationConfiguration = authenticationConfiguration ?? throw new ArgumentNullException(nameof(authenticationConfiguration));
+        }
+
+        public JwtSecurityToken GenerateToken(List<Claim> authClaims)
+        {
+            var authSignInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationConfiguration.Secret));
+
+            return new JwtSecurityToken(
+                _authenticationConfiguration.ValidIssuer,
+                _authenticationConfiguration.ValidAudience,
+                authClaims,
+                expires: DateTime.Now.Add(TimeSpan.Parse(_authenticationConfiguration.Expires)),
+                signingCredentials: new SigningCredentials(authSignInKey, SecurityAlgorithms.HmacSha256));
         }
 
         public IPrincipal ValidateToken(string token)

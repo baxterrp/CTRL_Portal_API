@@ -1,4 +1,4 @@
-﻿namespace CTRL.Portal.API.Middleware
+﻿namespace CTRL.Portal.API.Contracts
 {
     public class AuthenticationParameters
     {

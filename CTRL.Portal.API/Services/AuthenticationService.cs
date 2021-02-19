@@ -1,18 +1,16 @@
 ﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Exceptions;
+using CTRL.Portal.API.Middleware;
 using CTRL.Portal.Data.DTO;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Services
@@ -20,18 +18,18 @@ namespace CTRL.Portal.API.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly AuthenticationConfiguration _authenticationConfiguration;
+        private readonly IAuthenticationTokenManager _authenticationTokenManager;
         private readonly IAccountService _accountService;
         private readonly IUserSettingsService _userSettingsService;
 
         public AuthenticationService(
             UserManager<ApplicationUser> userManager, 
-            AuthenticationConfiguration authenticationConfiguration, 
+            IAuthenticationTokenManager authenticationTokenManager, 
             IAccountService accountService, 
             IUserSettingsService userSettingsService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _authenticationConfiguration = authenticationConfiguration ?? throw new ArgumentNullException(nameof(authenticationConfiguration));
+            _authenticationTokenManager = authenticationTokenManager ?? throw new ArgumentNullException(nameof(authenticationTokenManager));
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
             _userSettingsService = userSettingsService ?? throw new ArgumentNullException(nameof(userSettingsService));
         }
@@ -68,7 +66,7 @@ namespace CTRL.Portal.API.Services
                 {
                     Message = ApiMessages.LoginSuccessful,
                     Status = HttpStatusCode.OK,
-                    Token = new JwtSecurityTokenHandler().WriteToken(GenerateToken(authClaims)),
+                    Token = new JwtSecurityTokenHandler().WriteToken(_authenticationTokenManager.GenerateToken(authClaims)),
                     UserName = loginContract.UserName,
                     UserSettings = userSettingsResponse?.IsCompletedSuccessfully ?? false ? userSettingsResponse.Result : null,
                     Accounts = accountResponse?.IsCompletedSuccessfully ?? false ? accountResponse.Result : new List<AccountDisplay>()
@@ -117,17 +115,6 @@ namespace CTRL.Portal.API.Services
 
                 throw new InvalidOperationException(ApiMessages.UnhandledErrorCreatingUser);
             }
-        }
-
-        private JwtSecurityToken GenerateToken(List<Claim> authClaims)
-        {
-            var authSignInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationConfiguration.Secret));
-            return new JwtSecurityToken(
-                _authenticationConfiguration.ValidIssuer,
-                _authenticationConfiguration.ValidAudience,
-                authClaims,
-                expires: DateTime.Now.Add(TimeSpan.Parse(_authenticationConfiguration.Expires)),
-                signingCredentials: new SigningCredentials(authSignInKey, SecurityAlgorithms.HmacSha256));
         }
 
         private static void ValidateOnLogin(LoginContract loginContract)
