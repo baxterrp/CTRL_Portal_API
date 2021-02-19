@@ -19,5 +19,6 @@
 	            INNER JOIN Accounts a
 		            ON a.Id = ua.AccountId
 		    WHERE UserName = @UserName";
+        public static readonly string AddCode = "INSERT INTO Codes(Id, Email, Expiration, Code) VALUES (@Id, @Email, @Expiration, @Code)";
     }
 }

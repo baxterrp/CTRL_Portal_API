@@ -25,6 +25,8 @@ namespace CTRL.Portal.API.Extensions
             services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
             services.AddSingleton<IEmailProvider, EmailProvider>();
             services.AddSingleton<IUtilityManager, UtilityManager>();
+            services.AddSingleton<ICodeRepository, CodeRepository>();
+            services.AddSingleton<ICodeService, CodeService>();
 
             return services;
         }
