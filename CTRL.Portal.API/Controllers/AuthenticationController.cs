@@ -12,11 +12,10 @@ namespace CTRL.Portal.API.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
 
-        public AuthenticationController(IAuthenticationService authenticationService, IEmailProvider emailProvider, ICodeService codeService)
+        public AuthenticationController(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         }
-    
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationContract registrationContract)
         {
