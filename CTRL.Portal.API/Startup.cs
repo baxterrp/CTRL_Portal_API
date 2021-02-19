@@ -1,3 +1,5 @@
+using CTRL.Portal.API.Configuration;
+using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Extensions;
 using CTRL.Portal.API.Middleware;
@@ -40,13 +42,25 @@ namespace CTRL.Portal.API
             {
                 options.UseSqlServer(connectionString);
             });
-            
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             services.AddCustomAuthentication();
             services.AddCustomServices();
+
+            services.AddTransient(sp =>
+            {
+                var authConfig = sp.GetRequiredService<AuthenticationConfiguration>();
+
+                return new AuthenticationParameters
+                {
+                    Issuer = authConfig.ValidIssuer,
+                    Audience = authConfig.ValidAudience,
+                    Key = authConfig.Secret
+                };
+            });
 
             services.AddCors(sp => sp.AddPolicy("StandardPolicy", builder =>
             {

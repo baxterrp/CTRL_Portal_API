@@ -46,22 +46,8 @@ namespace CTRL.Portal.API.Extensions
 
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration config)
         {
-            var emailConfig = new EmailConfiguration();
-            var appSettingsEmailConfig = config.GetSection("EmailConfiguration");
-            appSettingsEmailConfig.Bind(emailConfig);
-            services.AddSingleton(emailConfig);
-
-            var authConfig = new AuthenticationConfiguration();
-            var appSettingsAuthConfig = config.GetSection("JWT");
-            appSettingsAuthConfig.Bind(authConfig);
-            services.AddSingleton(authConfig);
-
-            services.AddTransient(sp => new AuthenticationParameters
-            {
-                Issuer = authConfig.ValidIssuer,
-                Audience = authConfig.ValidAudience,
-                Key = authConfig.Secret
-            });
+            BindConfiguration<EmailConfiguration>(services, config, "EmailConfiguration");
+            BindConfiguration<AuthenticationConfiguration>(services, config, "JWT");
 
             return services;
         }
@@ -78,6 +64,16 @@ namespace CTRL.Portal.API.Extensions
                 .AddScheme<ApiAuthenticationOptions, ApiAuthenticationHandler>(ApiNames.ApiAuthenticationScheme, "Api Authenticaiton", null);
 
             return services;
+        }
+
+        private static void BindConfiguration<TConfigClass>(IServiceCollection services, IConfiguration config, string appSettingsSection)
+            where TConfigClass : class, new()
+        {
+            var configurationInstance = new TConfigClass();
+            var appSettingsObject = config.GetSection(appSettingsSection);
+
+            appSettingsObject.Bind(configurationInstance);
+            services.AddSingleton(configurationInstance);
         }
     }
 }
