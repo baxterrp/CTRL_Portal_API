@@ -2,8 +2,6 @@
 using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.Data.DataExceptions;
-using CTRL.Portal.Data.DTO;
-using CTRL.Portal.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;

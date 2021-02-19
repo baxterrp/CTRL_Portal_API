@@ -1,6 +1,5 @@
 ﻿using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.Services;
-using CTRL.Portal.Data.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,7 +20,7 @@ namespace CTRL.Portal.API.Controllers
         }
 
         [HttpPut("resetpass")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordContract resetPasswordContract)
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordContract resetPasswordContract)
         {
             await _userService.ResetPassword(resetPasswordContract);
 
@@ -29,7 +28,7 @@ namespace CTRL.Portal.API.Controllers
         }
 
         [HttpDelete("{userName}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] string userName)
+        public async Task<IActionResult> DeleteUser([FromRoute]string userName)
         {
             await _userService.DeleteUser(userName);
 
