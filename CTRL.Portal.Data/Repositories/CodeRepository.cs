@@ -20,26 +20,11 @@ namespace CTRL.Portal.Data.Repositories
             _databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
         }
     
-        public async Task SavePersistCode(string email, PersistCode code)
+        public async Task SaveCode(PersistedCode persistCode)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-
-            await connection.ExecuteAsync(SqlQueries.AddCode, new { Email = email, code.Expiration, code.ResetCode });
+            await connection.ExecuteAsync(SqlQueries.AddCode, new {Email = persistCode.Email, Expiration = persistCode.Expiration, resetCode = persistCode.Code}); 
         }
 
-        public async Task SaveCode(PersistCode persistCode)
-        {
-            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            await connection.ExecuteAsync(SqlQueries.AddCode,
-                new
-                {
-                    email = persistCode.Email,
-                    expiration = persistCode.Expiration,
-                    id = persistCode.Id,
-                    resetCode = persistCode.ResetCode
-                }); ;
-        }
-
-      
     }
 }

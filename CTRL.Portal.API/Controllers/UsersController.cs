@@ -35,23 +35,5 @@ namespace CTRL.Portal.API.Controllers
 
             return Ok();
         }
-
-        [HttpPost("savePersistCode")] //does not work
-        public async Task<IActionResult> SavePersistCode([FromBody] string email)
-        {
-
-            await _userService.SavePersistCode(email);
-
-            return Ok();
-        }
-
-        //[HttpPost("saveCode")] //does not work
-        //public async Task<IActionResult> SendCode([FromBody] string email)
-        //{
-
-        //    await _userService.SaveCode(persistCode);
-
-        //        return Ok();
-        //}
     }
 }

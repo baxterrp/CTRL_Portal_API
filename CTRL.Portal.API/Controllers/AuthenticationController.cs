@@ -13,13 +13,13 @@ namespace CTRL.Portal.API.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IEmailProvider _emailProvider;
-        private readonly IUserService _userService;
+        private readonly ICodeService _codeService;
 
-        public AuthenticationController(IAuthenticationService authenticationService, IEmailProvider emailProvider, IUserService userService)
+        public AuthenticationController(IAuthenticationService authenticationService, IEmailProvider emailProvider, ICodeService codeService)
         {
             _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
         }
     
         [HttpPost("register")]
@@ -42,18 +42,13 @@ namespace CTRL.Portal.API.Controllers
             return Ok();
         }
 
-        [HttpPost("savePersistCode")] //does not work
-        public async Task<IActionResult> SavePersistCode([FromBody] string email)
+        [HttpPost("savePersistCode")] 
+        public async Task<IActionResult> SavePersistCode(string email)
         {
+            await _codeService.SaveCode(email);
 
-            await _userService.SavePersistCode(email);
-
-            return Ok();
+            return Ok(email);
         }
-
-        //[HttpPost("saveCode")]  //this does not work
-        //public async Task<IActionResult> SendCode([FromBody] string email) =>
-        //    Ok(await _userService.GenerateCode(email));
 
     }
 }

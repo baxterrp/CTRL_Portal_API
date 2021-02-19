@@ -8,8 +8,6 @@ namespace CTRL.Portal.API.Services
     {
         Task ResetPassword(ResetPasswordContract resetPasswordContract);
         Task DeleteUser(string userName);
-        Task SaveCode(PersistCode persistCode);
-        //Task SavePersistCode(string email);
-        Task<PersistCode> SavePersistCode(string email);
+      
     }
 }
