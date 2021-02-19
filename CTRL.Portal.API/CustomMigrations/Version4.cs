@@ -8,16 +8,16 @@ namespace CTRL.Portal.API.CustomMigrations
     {
         public override void Down()
         {
-            Delete.Table("ResetCodes");
+            Delete.Table("Codes");
         }
 
         public override void Up()
         {
-            Create.Table("ResetCodes")
-                .WithColumn("Id").AsInt32().PrimaryKey().Identity(1, 1)
+            Create.Table("Codes")
+                .WithColumn("Id").AsString().NotNullable().PrimaryKey()
                 .WithColumn("Email").AsString().NotNullable()
                 .WithColumn("Expiration").AsDateTime().NotNullable()
-                .WithColumn("ResetCode").AsString(6);
+                .WithColumn("Code").AsString(6);
         }
     }
 }

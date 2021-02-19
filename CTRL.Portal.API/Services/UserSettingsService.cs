@@ -28,6 +28,5 @@ namespace CTRL.Portal.API.Services
 
             await _userSettingsRepository.SaveSettings(userSettings);
         }
-       
     }
 }

@@ -8,6 +8,5 @@ namespace CTRL.Portal.API.Services
     {
         Task ResetPassword(ResetPasswordContract resetPasswordContract);
         Task DeleteUser(string userName);
-      
     }
 }

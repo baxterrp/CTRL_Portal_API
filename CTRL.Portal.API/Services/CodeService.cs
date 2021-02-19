@@ -14,7 +14,7 @@ namespace CTRL.Portal.API.Services
     {
         private readonly ICodeRepository _codeRepository;
         private readonly IUtilityManager _utilityManager;
-        public CodeService (ICodeRepository codeRepository, IUtilityManager utilityManager)
+        public CodeService(ICodeRepository codeRepository, IUtilityManager utilityManager)
         {
             _codeRepository = codeRepository ?? throw new ArgumentNullException(nameof(codeRepository));
             _utilityManager = utilityManager ?? throw new ArgumentNullException(nameof(utilityManager));
@@ -22,21 +22,19 @@ namespace CTRL.Portal.API.Services
 
         public async Task<PersistedCode> SaveCode(string email)
         {
-            var resetCode =  _utilityManager.GenerateCode(6);
             var expiration = DateTime.Now.AddMinutes(10);
-            await _codeRepository.SaveCode(new PersistedCode
-            {
-                Email = email,
-                Expiration = expiration,
-                Code = resetCode,
-            }) ;
 
-            return new PersistedCode
+            var code = new PersistedCode
             {
-                Email = email,
-                Expiration = expiration,
-                Code = resetCode,
+                Code = _utilityManager.GenerateCode(6),
+                Expiration = DateTime.Now.AddMinutes(10),
+                Id = Guid.NewGuid().ToString(),
+                Email = email
             };
+
+            await _codeRepository.SaveCode(code);
+
+            return code;
         }
     }
 }
