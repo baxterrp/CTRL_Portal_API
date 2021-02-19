@@ -16,6 +16,7 @@ namespace CTRL.Portal.API.Controllers
         {
             _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationContract registrationContract)
         {
