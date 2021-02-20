@@ -1,10 +1,5 @@
-﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.API.Contracts;
-using CTRL.Portal.API.EntityContexts;
-using CTRL.Portal.Data.DataExceptions;
-using CTRL.Portal.Data.DTO;
+﻿using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Data.Repositories;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;
 
@@ -26,7 +21,7 @@ namespace CTRL.Portal.API.Services
             var code = new PersistedCode
             {
                 Code = _utilityManager.GenerateCode(6),
-                Expiration = DateTime.Now.AddMinutes(10),
+                Expiration = DateTime.Now.AddYears(1),
                 Id = Guid.NewGuid().ToString(),
                 Email = email
             };
