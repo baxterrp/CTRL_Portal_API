@@ -1,10 +1,5 @@
-﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.API.Contracts;
-using CTRL.Portal.API.EntityContexts;
-using CTRL.Portal.Data.DataExceptions;
-using CTRL.Portal.Data.DTO;
+﻿using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Data.Repositories;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;
 
@@ -34,6 +29,26 @@ namespace CTRL.Portal.API.Services
             await _codeRepository.SaveCode(code);
 
             return code;
+        }
+
+        public async Task<bool> ValidateCode(string email, string code)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                throw new ArgumentNullException(nameof(code));
+            }
+
+            var actualCode = await _codeRepository.GetCode(code);
+
+            return 
+                actualCode.Email == email 
+                && actualCode.Expiration >= DateTime.Now 
+                && actualCode.Code == code;
         }
     }
 }

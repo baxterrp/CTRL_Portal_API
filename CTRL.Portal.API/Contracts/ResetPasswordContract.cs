@@ -9,5 +9,8 @@ namespace CTRL.Portal.API.Contracts
 
         [Required]
         public string NewPassword { get; set; }
+
+        [Required]
+        public string Code { get; set; }
     }
 }

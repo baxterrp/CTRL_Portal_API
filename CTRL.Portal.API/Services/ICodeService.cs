@@ -1,5 +1,4 @@
-﻿using CTRL.Portal.API.Contracts;
-using CTRL.Portal.Data.DTO;
+﻿using CTRL.Portal.Data.DTO;
 using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Services
@@ -7,5 +6,6 @@ namespace CTRL.Portal.API.Services
     public interface ICodeService
     {
         Task<PersistedCode> SaveCode(string email);
+        Task<bool> ValidateCode(string email, string code);
     }
 }

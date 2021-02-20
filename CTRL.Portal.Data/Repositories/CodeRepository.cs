@@ -4,9 +4,7 @@ using CTRL.Portal.Data.DataExceptions;
 using CTRL.Portal.Data.DTO;
 using Dapper;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CTRL.Portal.Data.Repositories
@@ -19,7 +17,21 @@ namespace CTRL.Portal.Data.Repositories
         {
             _databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
         }
-    
+
+        public async Task<PersistedCode> GetCode(string code)
+        {
+            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
+
+            var persistedCode = await connection.QuerySingleAsync<PersistedCode>(SqlQueries.GetCode, new { Code = code });
+
+            if(persistedCode is null)
+            {
+                throw new ResourceNotFoundException($"No code found with value {code}");
+            }
+
+            return persistedCode;
+        }
+
         public async Task SaveCode(PersistedCode persistCode)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);

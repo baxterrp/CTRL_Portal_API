@@ -20,5 +20,6 @@
 		            ON a.Id = ua.AccountId
 		    WHERE UserName = @UserName";
         public static readonly string AddCode = "INSERT INTO Codes(Id, Email, Expiration, Code) VALUES (@Id, @Email, @Expiration, @Code)";
+        public static readonly string GetCode = "SELECT * FROM Codes WHERE [Code] = @Code";
     }
 }

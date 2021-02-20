@@ -11,10 +11,12 @@ namespace CTRL.Portal.API.Services
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICodeService _codeService;
 
-        public UserService(UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<ApplicationUser> userManager, ICodeService codeService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
         }
 
         public async Task DeleteUser(string userName)
@@ -38,12 +40,25 @@ namespace CTRL.Portal.API.Services
             if (string.IsNullOrWhiteSpace(resetPasswordContract.NewPassword)) throw new ArgumentException(nameof(resetPasswordContract.NewPassword));
 
             var user = await _userManager.FindByNameAsync(resetPasswordContract.UserName);
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPasswordContract.NewPassword);
+            if(user is null)
+            {
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+            }
 
-            if (!result.Succeeded)
-                throw new InvalidOperationException(ApiMessages.InvalidPassword);
+            var codeIsValid = await _codeService.ValidateCode(user.Email, resetPasswordContract.Code);
+
+            if (codeIsValid)
+            {
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPasswordContract.NewPassword);
+
+                if (!result.Succeeded)
+                    throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+            }
+
+            throw new InvalidOperationException(ApiMessages.InvalidCredentials);
         }
     }
 }
