@@ -41,24 +41,24 @@ namespace CTRL.Portal.API.Services
 
             var user = await _userManager.FindByNameAsync(resetPasswordContract.UserName);
 
-            if(user is null)
+            if (user is null)
             {
                 throw new InvalidOperationException(ApiMessages.InvalidCredentials);
             }
 
             var codeIsValid = await _codeService.ValidateCode(user.Email, resetPasswordContract.Code);
 
-            if (codeIsValid)
+            if (!codeIsValid)
             {
-                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-                var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPasswordContract.NewPassword);
-
-                if (!result.Succeeded)
-                    throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials);
             }
 
-            throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPasswordContract.NewPassword);
+
+            if (!result.Succeeded)
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials);
         }
     }
 }

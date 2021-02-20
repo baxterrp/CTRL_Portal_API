@@ -45,6 +45,11 @@ namespace CTRL.Portal.API.Services
 
             var actualCode = await _codeRepository.GetCode(code);
 
+            if(actualCode is null)
+            {
+                return false;
+            }
+
             return 
                 actualCode.Email == email 
                 && actualCode.Expiration >= DateTime.Now 

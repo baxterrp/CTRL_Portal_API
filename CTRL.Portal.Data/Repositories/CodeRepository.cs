@@ -20,22 +20,29 @@ namespace CTRL.Portal.Data.Repositories
 
         public async Task<PersistedCode> GetCode(string code)
         {
-            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-
-            var persistedCode = await connection.QuerySingleAsync<PersistedCode>(SqlQueries.GetCode, new { Code = code });
-
-            if(persistedCode is null)
+            try
             {
-                throw new ResourceNotFoundException($"No code found with value {code}");
-            }
+                using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-            return persistedCode;
+                var persistedCode = await connection.QuerySingleAsync<PersistedCode>(SqlQueries.GetCode, new { Code = code });
+
+                if (persistedCode is null)
+                {
+                    throw new ResourceNotFoundException($"No code found with value {code}");
+                }
+
+                return persistedCode;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task SaveCode(PersistedCode persistCode)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            await connection.ExecuteAsync(SqlQueries.AddCode, new {Id = persistCode.Id, Email = persistCode.Email, Expiration = persistCode.Expiration, Code = persistCode.Code}); 
+            await connection.ExecuteAsync(SqlQueries.AddCode, new { Id = persistCode.Id, Email = persistCode.Email, Expiration = persistCode.Expiration, Code = persistCode.Code });
         }
 
     }
