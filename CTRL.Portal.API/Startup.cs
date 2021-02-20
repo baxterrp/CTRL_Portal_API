@@ -3,6 +3,7 @@ using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Extensions;
 using CTRL.Portal.API.Middleware;
+using CTRL.Portal.API.Services;
 using CTRL.Portal.Data.Configuration;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
@@ -72,7 +73,11 @@ namespace CTRL.Portal.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner runner)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            IMigrationRunner runner,
+            RoleManager<IdentityRole> roleManager)
         {
             app.UseRouting();
             app.UseCors("StandardPolicy");
@@ -86,6 +91,8 @@ namespace CTRL.Portal.API
             });
 
             runner.MigrateUp();
+
+            IdentityUtilityManager.SeedRoles(roleManager);
         }
     }
 }
