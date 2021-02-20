@@ -18,13 +18,13 @@ namespace CTRL.Portal.Data.Repositories
             _databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
         }
 
-        public async Task<PersistedCode> GetCode(string code)
+        public async Task<PersistedCode> GetCode(string code, string email)
         {
             try
             {
                 using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-                var persistedCode = await connection.QuerySingleAsync<PersistedCode>(SqlQueries.GetCode, new { Code = code });
+                var persistedCode = await connection.QuerySingleAsync<PersistedCode>(SqlQueries.GetCode, new { Code = code, Email = email });
 
                 if (persistedCode is null)
                 {

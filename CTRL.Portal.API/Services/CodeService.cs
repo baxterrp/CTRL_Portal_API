@@ -43,7 +43,7 @@ namespace CTRL.Portal.API.Services
                 throw new ArgumentNullException(nameof(code));
             }
 
-            var actualCode = await _codeRepository.GetCode(code);
+            var actualCode = await _codeRepository.GetCode(code, email);
 
             if(actualCode is null)
             {

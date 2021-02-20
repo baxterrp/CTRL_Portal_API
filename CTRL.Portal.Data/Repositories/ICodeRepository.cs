@@ -6,6 +6,6 @@ namespace CTRL.Portal.Data.Repositories
     public interface ICodeRepository
     {
         Task SaveCode(PersistedCode persistCode);
-        Task<PersistedCode> GetCode(string code);
+        Task<PersistedCode> GetCode(string code, string email);
     }
 }
