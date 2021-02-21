@@ -55,12 +55,25 @@ namespace CTRL.Portal.API.Services
             if (string.IsNullOrWhiteSpace(resetPasswordContract.NewPassword)) throw new ArgumentException(nameof(resetPasswordContract.NewPassword));
 
             var user = await _userManager.FindByNameAsync(resetPasswordContract.UserName);
+
+            if (user is null)
+            {
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+            }
+
+            var codeIsValid = await _codeService.ValidateCode(user.Email, resetPasswordContract.Code);
+
+            if (!codeIsValid)
+            {
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+            }
+
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPasswordContract.NewPassword);
 
             if (!result.Succeeded)
-                throw new InvalidOperationException(ApiMessages.InvalidPassword);
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials);
         }
 
         private EmailContract GetCodeEmail(string email, PersistedCode code) => 

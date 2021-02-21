@@ -30,5 +30,30 @@ namespace CTRL.Portal.API.Services
 
             return code;
         }
+
+        public async Task<bool> ValidateCode(string email, string code)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                throw new ArgumentNullException(nameof(code));
+            }
+
+            var actualCode = await _codeRepository.GetCode(code, email);
+
+            if(actualCode is null)
+            {
+                return false;
+            }
+
+            return 
+                actualCode.Email == email 
+                && actualCode.Expiration >= DateTime.Now 
+                && actualCode.Code == code;
+        }
     }
 }
