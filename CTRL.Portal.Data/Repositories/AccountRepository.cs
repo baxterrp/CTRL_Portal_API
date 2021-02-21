@@ -28,6 +28,13 @@ namespace CTRL.Portal.Data.Repositories
             await connection.ExecuteAsync(SqlQueries.AddAccountToUser, new { UserName = userName, AccountId = account.Id });
         }
 
+        public async Task<AccountDisplay> GetAccountById(string accountId)
+        {
+            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
+
+            return await connection.QuerySingleAsync<AccountDisplay>(SqlQueries.GetAccountById, new { Id = accountId });
+        }
+
         public async Task<IEnumerable<AccountDisplay>> GetAllAccountsByUser(string userName)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);

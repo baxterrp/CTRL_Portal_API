@@ -21,7 +21,7 @@ namespace CTRL.Portal.API.Services
             var code = new PersistedCode
             {
                 Code = _utilityManager.GenerateCode(6),
-                Expiration = DateTime.Now.AddMinutes(10),
+                Expiration = DateTime.Now.AddYears(1),
                 Id = Guid.NewGuid().ToString(),
                 Email = email
             };
