@@ -26,5 +26,13 @@ namespace CTRL.Portal.API.Controllers
 
             return Ok(account);
         }
+
+        [HttpPost("invite")]
+        public async Task<IActionResult> InviteUser([FromBody]AccountInvitation accountInvitation)
+        {
+            await _accountService.InviteUser(accountInvitation);
+
+            return Ok();
+        }
     }
 }

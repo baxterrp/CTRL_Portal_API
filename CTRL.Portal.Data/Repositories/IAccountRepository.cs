@@ -8,5 +8,6 @@ namespace CTRL.Portal.Data.Repositories
     {
         Task AddAccount(string userName, AccountDisplay account);
         Task<IEnumerable<AccountDisplay>> GetAllAccountsByUser(string userName);
+        Task<AccountDisplay> GetAccountById(string accountId);
     }
 }
