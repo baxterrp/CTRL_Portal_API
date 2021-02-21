@@ -34,5 +34,13 @@ namespace CTRL.Portal.API.Controllers
 
             return Ok();
         }
+
+        [HttpPost("requestReset")]
+        public async Task<IActionResult> ResetPassword([FromQuery]string email)
+        {
+            await _userService.RequestPasswordReset(email);
+
+            return Ok();
+        }
     }
 }
