@@ -33,7 +33,7 @@ namespace CTRL.Portal.API.Services
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
-                throw new InvalidOperationException($"Could not delete user {user}");
+                throw new InvalidOperationException($"Could not delete user {userName}");
         }
 
         public async Task RequestPasswordReset(string email)
@@ -53,6 +53,7 @@ namespace CTRL.Portal.API.Services
             if (resetPasswordContract is null) throw new ArgumentNullException(nameof(resetPasswordContract));
             if (string.IsNullOrWhiteSpace(resetPasswordContract.UserName)) throw new ArgumentException(nameof(resetPasswordContract.UserName));
             if (string.IsNullOrWhiteSpace(resetPasswordContract.NewPassword)) throw new ArgumentException(nameof(resetPasswordContract.NewPassword));
+            if (string.IsNullOrWhiteSpace(resetPasswordContract.Code)) throw new ArgumentException(nameof(resetPasswordContract.Code));
 
             var user = await _userManager.FindByNameAsync(resetPasswordContract.UserName);
 
@@ -76,7 +77,7 @@ namespace CTRL.Portal.API.Services
                 throw new InvalidOperationException(ApiMessages.InvalidCredentials);
         }
 
-        private EmailContract GetCodeEmail(string email, PersistedCode code) => 
+        private static EmailContract GetCodeEmail(string email, PersistedCode code) => 
             new EmailContract
             {
                 Header = $"Password Reset Requested for {email}",
