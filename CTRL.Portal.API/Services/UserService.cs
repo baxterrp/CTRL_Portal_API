@@ -45,7 +45,7 @@ namespace CTRL.Portal.API.Services
 
             var code = await _codeService.SaveCode(email);
 
-            _emailProvider.SendEmail(GetCodeEmail(email, code));
+            await _emailProvider.SendEmail(GetCodeEmail(email, code));
         }
 
         public async Task ResetPassword(ResetPasswordContract resetPasswordContract)
@@ -83,7 +83,8 @@ namespace CTRL.Portal.API.Services
                 Header = $"Password Reset Requested for {email}",
                 Message = $"Your password reset code is {code.Code}",
                 Name = email,
-                Recipient = email
+                Recipient = email,
+                ViewName = "ResetPasswordEmailTemplate"
             };
     }
 }

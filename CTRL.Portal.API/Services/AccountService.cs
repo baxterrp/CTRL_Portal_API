@@ -79,7 +79,7 @@ namespace CTRL.Portal.API.Services
                 if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty, 
+                    await _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty, 
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
@@ -90,7 +90,8 @@ namespace CTRL.Portal.API.Services
             Header = $"You've been invited to {accountName.ToUpper()}",
             Message = $"{email}, you've been requested to join {accountName.ToUpper()}, use this code to accept {code}",
             Name = email,
-            Recipient = email
+            Recipient = email,
+            ViewName = "AccountEmailTemplate"
         };
     }
 }
