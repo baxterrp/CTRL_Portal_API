@@ -4,19 +4,22 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using System;
+using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Services
 {
     public class EmailProvider : IEmailProvider
     {
         private readonly EmailConfiguration _emailConfiguration;
+        private readonly IViewRenderService _viewRenderService;
 
-        public EmailProvider(EmailConfiguration emailConfiguration)
+        public EmailProvider(EmailConfiguration emailConfiguration, IViewRenderService viewRenderService)
         {
             _emailConfiguration = emailConfiguration ?? throw new ArgumentNullException(nameof(emailConfiguration));
+            _viewRenderService = viewRenderService ?? throw new ArgumentNullException(nameof(viewRenderService));
         }
 
-        public void SendEmail(EmailContract email)
+        public async Task SendEmail(EmailContract email)
         {
             ValidateEmail(email);
 
@@ -32,8 +35,10 @@ namespace CTRL.Portal.API.Services
 
                 message.Subject = email.Header;
 
+                var body = await _viewRenderService.RenderToStringAsync(email.ViewName, email.Message);
+
                 var builder = new BodyBuilder();
-                builder.TextBody = email.Message;
+                builder.HtmlBody = body;
                 message.Body = builder.ToMessageBody();
 
                 using (var client = new SmtpClient())

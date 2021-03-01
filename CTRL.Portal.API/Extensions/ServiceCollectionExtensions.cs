@@ -1,6 +1,5 @@
 ﻿using CTRL.Portal.API.APIConstants;
 using CTRL.Portal.API.Configuration;
-using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.Middleware;
 using CTRL.Portal.API.Services;
 using CTRL.Portal.Data.Repositories;
@@ -19,14 +18,15 @@ namespace CTRL.Portal.API.Extensions
             services.AddTransient<IAuthenticationTokenManager, AuthenticationTokenManager>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<IAccountService, AccountService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddSingleton<IAccountRepository, AccountRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();
             services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
-            services.AddSingleton<IEmailProvider, EmailProvider>();
+            services.AddScoped<IEmailProvider, EmailProvider>();
             services.AddSingleton<IUtilityManager, UtilityManager>();
             services.AddSingleton<ICodeRepository, CodeRepository>();
             services.AddSingleton<ICodeService, CodeService>();
+            services.AddScoped<IViewRenderService, ViewRenderService>();
 
             return services;
         }

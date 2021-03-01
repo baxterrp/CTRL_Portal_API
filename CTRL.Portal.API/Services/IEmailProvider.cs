@@ -1,9 +1,10 @@
 ﻿using CTRL.Portal.API.Contracts;
+using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Services
 {
     public interface IEmailProvider
     {
-        void SendEmail(EmailContract email);
+        Task SendEmail(EmailContract email);
     }
 }
