@@ -1,4 +1,5 @@
-﻿using CTRL.Portal.API.Contracts;
+﻿using CTRL.Portal.API.APIConstants;
+using CTRL.Portal.API.Contracts;
 using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Data.Repositories;
 using System;
@@ -13,12 +14,14 @@ namespace CTRL.Portal.API.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICodeService _codeService;
         private readonly IEmailProvider _emailProvider;
+        private readonly IAccountCodeRepository _accountCodeRepository;
 
-        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider)
+        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider, IAccountCodeRepository accountCodeRepository)
         {
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
+            _accountCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
         }
 
         public async Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract)
@@ -52,12 +55,12 @@ namespace CTRL.Portal.API.Services
 
         public async Task InviteUser(AccountInvitation accountInvitation)
         {
-            if(accountInvitation is null)
+            if (accountInvitation is null)
             {
                 throw new ArgumentNullException(nameof(accountInvitation));
             }
 
-            if(string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
+            if (string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
             {
                 throw new ArgumentException("AccountId and Email must not be null or empty", nameof(accountInvitation));
             }
@@ -66,25 +69,36 @@ namespace CTRL.Portal.API.Services
 
             var accountResponse = _accountRepository.GetAccountById(accountInvitation.AccountId);
 
+            var accountCode = new AccountCode
+            {
+                Id = Guid.NewGuid().ToString(),
+                AccountId = accountInvitation.AccountId,
+                Code = codeResponse.Result.Code
+
+            };
+
+            var saveAccountCode = _accountCodeRepository.SaveAccountCode(accountCode);
+
             List<Task> tasks = new List<Task>
             {
                 codeResponse,
-                accountResponse
+                accountResponse,
+                saveAccountCode
+
             };
 
             await Task.WhenAll(tasks);
 
-            if(tasks.All(t => t?.IsCompletedSuccessfully ?? false))
+            if (tasks.All(t => t?.IsCompletedSuccessfully ?? false))
             {
-                if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
+                if (!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty, 
+                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty,
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
         }
-
         private EmailContract GetInviteEmail(string accountName, string email, string code) => new EmailContract
         {
             Header = $"You've been invited to {accountName.ToUpper()}",
@@ -92,5 +106,20 @@ namespace CTRL.Portal.API.Services
             Name = email,
             Recipient = email
         };
+       
+        //public async Task AcceptInvite(string email, string code, string userName) //take in the parameters required
+        //{
+        //    var codeIsValid = await _codeService.ValidateCode(email, code); //validate that the email address is good and the code is not expired
+
+        //    if (!codeIsValid)
+        //    {
+        //        throw new InvalidOperationException(ApiMessages.InvalidCredentials); // message to user that it failed
+        //    }
+        //    var accountCode = await _accountCodeRepository.GetAccountId(code); //use the code to look up the accountCode object
+
+        //    var accountId = accountCode.AccountId; //get the accountId out of that object
+
+        //    await _accountRepository.AddUserToAccount(userName, accountId); //add the user to the account
+        //}
     }
 }

@@ -10,5 +10,6 @@ namespace CTRL.Portal.API.Services
         Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract);
         Task<IEnumerable<AccountDisplay>> GetAccounts(string userName);
         Task InviteUser(AccountInvitation accountInvitation);
+        Task AcceptInvite(string email, string code, string userName);
     }
 }

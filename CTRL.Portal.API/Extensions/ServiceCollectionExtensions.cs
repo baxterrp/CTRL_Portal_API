@@ -27,6 +27,7 @@ namespace CTRL.Portal.API.Extensions
             services.AddSingleton<IUtilityManager, UtilityManager>();
             services.AddSingleton<ICodeRepository, CodeRepository>();
             services.AddSingleton<ICodeService, CodeService>();
+            services.AddSingleton<IAccountCodeRepository, AccountCodeRepository>();
 
             return services;
         }

@@ -44,5 +44,12 @@ namespace CTRL.Portal.Data.Repositories
 
             return accounts;
         }
+
+        public async Task AddUserToAccount(string userName, string accountId)
+        {
+            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
+
+            await connection.ExecuteAsync(SqlQueries.AddAccountToUser, new { UserName = userName, AccountId = accountId });
+        }
     }
 }
