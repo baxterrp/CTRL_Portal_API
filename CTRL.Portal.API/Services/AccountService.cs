@@ -94,11 +94,12 @@ namespace CTRL.Portal.API.Services
                 if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty,
-                        accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty)); 
+                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty, 
+                        accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
         }
+
         private EmailContract GetInviteEmail(string accountName, string email, string code) => new EmailContract
         {
             Header = $"You've been invited to {accountName.ToUpper()}",
