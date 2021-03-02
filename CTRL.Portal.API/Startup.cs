@@ -51,7 +51,7 @@ namespace CTRL.Portal.API
                 .AddDefaultTokenProviders();
 
             services.AddCustomAuthentication();
-            services.AddCustomServices();
+            services.AddCustomServices(Configuration);
 
             services.AddTransient(sp =>
             {

@@ -14,12 +14,14 @@ namespace CTRL.Portal.API.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICodeService _codeService;
         private readonly IEmailProvider _emailProvider;
+        private readonly string _senderDomain;
 
-        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider)
+        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider, string senderUrl)
         {
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
+            _senderDomain = !string.IsNullOrWhiteSpace(senderUrl) ? senderUrl : throw new ArgumentNullException(nameof(senderUrl));
         }
 
         public async Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract)
@@ -94,7 +96,8 @@ namespace CTRL.Portal.API.Services
             ViewName = EmailTemplateNames.InviteToAccount,
             AccountName = accountName,
             AcceptInviteCode = code,
-            SenderUserName = sender
+            SenderUserName = sender,
+            SenderUrl = string.Format($"{_senderDomain}{GeneralConstants.AcceptInviteUrl}", code)
         };
     }
 }

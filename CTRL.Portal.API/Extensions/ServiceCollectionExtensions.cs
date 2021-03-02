@@ -13,12 +13,20 @@ namespace CTRL.Portal.API.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomServices(this IServiceCollection services)
+        public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IAuthenticationTokenManager, AuthenticationTokenManager>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAccountService, AccountService>();
+
+            var acceptAccountUrl = configuration.GetValue<string>("ServiceUrls:Spa");
+
+            services.AddScoped<IAccountService, AccountService>(sp => new AccountService(
+                sp.GetRequiredService<IAccountRepository>(), 
+                sp.GetRequiredService<ICodeService>(),
+                sp.GetRequiredService<IEmailProvider>(),
+                acceptAccountUrl));
+
             services.AddSingleton<IAccountRepository, AccountRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();
             services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
