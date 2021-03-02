@@ -55,12 +55,12 @@ namespace CTRL.Portal.API.Services
 
         public async Task InviteUser(AccountInvitation accountInvitation)
         {
-            if (accountInvitation is null)
+            if(accountInvitation is null)
             {
                 throw new ArgumentNullException(nameof(accountInvitation));
             }
 
-            if (string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
+            if(string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
             {
                 throw new ArgumentException("AccountId and Email must not be null or empty", nameof(accountInvitation));
             }
@@ -89,13 +89,13 @@ namespace CTRL.Portal.API.Services
 
             await Task.WhenAll(tasks);
 
-            if (tasks.All(t => t?.IsCompletedSuccessfully ?? false))
+            if(tasks.All(t => t?.IsCompletedSuccessfully ?? false))
             {
-                if (!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
+                if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
                     _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty,
-                        accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
+                        accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty)); 
                 }
             }
         }
@@ -106,20 +106,20 @@ namespace CTRL.Portal.API.Services
             Name = email,
             Recipient = email
         };
-       
-        //public async Task AcceptInvite(string email, string code, string userName) //take in the parameters required
-        //{
-        //    var codeIsValid = await _codeService.ValidateCode(email, code); //validate that the email address is good and the code is not expired
 
-        //    if (!codeIsValid)
-        //    {
-        //        throw new InvalidOperationException(ApiMessages.InvalidCredentials); // message to user that it failed
-        //    }
-        //    var accountCode = await _accountCodeRepository.GetAccountId(code); //use the code to look up the accountCode object
+        public async Task AcceptInvite(string email, string code, string userName) //take in the parameters required
+        {
+            var codeIsValid = await _codeService.ValidateCode(email, code); //validate that the email address is good and the code is not expired
 
-        //    var accountId = accountCode.AccountId; //get the accountId out of that object
+            if (!codeIsValid)
+            {
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials); // message to user that it failed
+            }
+            var accountCode = await _accountCodeRepository.GetAccountId(code); //use the code to look up the accountCode object
 
-        //    await _accountRepository.AddUserToAccount(userName, accountId); //add the user to the account
-        //}
+            var accountId = accountCode.AccountId; //get the accountId out of that object
+
+            await _accountRepository.AddUserToAccount(userName, accountId); //add the user to the account
+        }
     }
 }
