@@ -18,13 +18,11 @@ namespace CTRL.Portal.API.Services
         private readonly ITempDataProvider _tempDataProvider;
         private readonly IServiceProvider _serviceProvider;
 
-        public ViewRenderService(IRazorViewEngine razorViewEngine,
-            ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider)
+        public ViewRenderService(IRazorViewEngine razorViewEngine, ITempDataProvider tempDataProvider, IServiceProvider serviceProvider)
         {
-            _razorViewEngine = razorViewEngine;
-            _tempDataProvider = tempDataProvider;
-            _serviceProvider = serviceProvider;
+            _razorViewEngine = razorViewEngine ?? throw new ArgumentNullException(nameof(razorViewEngine));
+            _tempDataProvider = tempDataProvider ?? throw new ArgumentNullException(nameof(tempDataProvider));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public async Task<string> RenderToStringAsync(string viewName, object model)
@@ -46,7 +44,7 @@ namespace CTRL.Portal.API.Services
             {
                 var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
 
-                if (viewResult.View is null)
+                if (viewResult?.View is null)
                 {
                     throw new InvalidOperationException($"{viewName} does not match any available view");
                 }
