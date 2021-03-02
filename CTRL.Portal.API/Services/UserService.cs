@@ -77,14 +77,14 @@ namespace CTRL.Portal.API.Services
                 throw new InvalidOperationException(ApiMessages.InvalidCredentials);
         }
 
-        private static EmailContract GetCodeEmail(string email, PersistedCode code) => 
-            new EmailContract
+        private static ResetPasswordEmailContract GetCodeEmail(string email, PersistedCode code) => 
+            new ResetPasswordEmailContract
             {
                 Header = $"Password Reset Requested for {email}",
-                Message = $"Your password reset code is {code.Code}",
                 Name = email,
                 Recipient = email,
-                ViewName = "ResetPasswordEmailTemplate"
+                ViewName = EmailTemplateNames.ResetPassword,
+                ResetCode = code.Code
             };
     }
 }

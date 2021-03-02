@@ -5,6 +5,7 @@ namespace CTRL.Portal.API.Services
 {
     public interface IEmailProvider
     {
-        Task SendEmail(EmailContract email);
+        Task SendEmail<TEmailContract>(TEmailContract emailModel)
+            where TEmailContract : EmailContract;
     }
 }

@@ -1,4 +1,5 @@
-﻿using CTRL.Portal.API.Contracts;
+﻿using CTRL.Portal.API.APIConstants;
+using CTRL.Portal.API.Contracts;
 using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Data.Repositories;
 using System;
@@ -79,19 +80,21 @@ namespace CTRL.Portal.API.Services
                 if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    await _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty, 
+                    await _emailProvider.SendEmail(GetInviteEmail(accountInvitation.SenderUserName, accountResponse.Result?.Name ?? string.Empty, 
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
         }
 
-        private EmailContract GetInviteEmail(string accountName, string email, string code) => new EmailContract
+        private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract
         {
             Header = $"You've been invited to {accountName.ToUpper()}",
-            Message = $"{email}, you've been requested to join {accountName.ToUpper()}, use this code to accept {code}",
             Name = email,
             Recipient = email,
-            ViewName = "AccountEmailTemplate"
+            ViewName = EmailTemplateNames.InviteToAccount,
+            AccountName = accountName,
+            AcceptInviteCode = code,
+            SenderUserName = sender
         };
     }
 }

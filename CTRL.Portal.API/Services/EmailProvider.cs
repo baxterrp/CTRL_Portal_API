@@ -19,9 +19,15 @@ namespace CTRL.Portal.API.Services
             _viewRenderService = viewRenderService ?? throw new ArgumentNullException(nameof(viewRenderService));
         }
 
-        public async Task SendEmail(EmailContract email)
+        public async Task SendEmail<TEmailContract>(TEmailContract email) 
+            where TEmailContract : EmailContract
         {
-            ValidateEmail(email);
+            if(!(email is EmailContract contract))
+            {
+                throw new ArgumentException($"Email model must be of type {nameof(EmailContract)}", nameof(email));
+            }
+
+            ValidateEmail(contract);
 
             try
             {
@@ -35,7 +41,7 @@ namespace CTRL.Portal.API.Services
 
                 message.Subject = email.Header;
 
-                var body = await _viewRenderService.RenderToStringAsync(email.ViewName, email.Message);
+                var body = await _viewRenderService.RenderToStringAsync(email.ViewName, email);
 
                 var builder = new BodyBuilder();
                 builder.HtmlBody = body;
@@ -59,7 +65,6 @@ namespace CTRL.Portal.API.Services
         {
             if (email is null) throw new ArgumentException(nameof(email));
             if (string.IsNullOrWhiteSpace(email.Header)) throw new ArgumentException(nameof(email.Header));
-            if (string.IsNullOrWhiteSpace(email.Message)) throw new ArgumentException(nameof(email.Message));
             if (string.IsNullOrWhiteSpace(email.Name)) throw new ArgumentException(nameof(email.Name));
             if (string.IsNullOrWhiteSpace(email.Recipient)) throw new ArgumentException(nameof(email.Recipient));
         }
