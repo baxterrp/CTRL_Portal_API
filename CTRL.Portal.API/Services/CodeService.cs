@@ -1,4 +1,5 @@
-﻿using CTRL.Portal.Data.DTO;
+﻿using CTRL.Portal.API.Configuration;
+using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Data.Repositories;
 using System;
 using System.Threading.Tasks;
@@ -7,11 +8,13 @@ namespace CTRL.Portal.API.Services
 {
     public class CodeService : ICodeService
     {
+        private readonly CodeConfiguration _codeConfiguration;
         private readonly ICodeRepository _codeRepository;
         private readonly IUtilityManager _utilityManager;
 
-        public CodeService(ICodeRepository codeRepository, IUtilityManager utilityManager)
+        public CodeService(CodeConfiguration codeConfiguration, ICodeRepository codeRepository, IUtilityManager utilityManager)
         {
+            _codeConfiguration = codeConfiguration ?? throw new ArgumentNullException(nameof(codeConfiguration));
             _codeRepository = codeRepository ?? throw new ArgumentNullException(nameof(codeRepository));
             _utilityManager = utilityManager ?? throw new ArgumentNullException(nameof(utilityManager));
         }
@@ -20,8 +23,8 @@ namespace CTRL.Portal.API.Services
         {
             var code = new PersistedCode
             {
-                Code = _utilityManager.GenerateCode(6),
-                Expiration = DateTime.Now.AddYears(1),
+                Code = _utilityManager.GenerateCode(),
+                Expiration = DateTime.Now.Add(TimeSpan.Parse(_codeConfiguration.Expires)),
                 Id = Guid.NewGuid().ToString(),
                 Email = email
             };
@@ -45,14 +48,14 @@ namespace CTRL.Portal.API.Services
 
             var actualCode = await _codeRepository.GetCode(code, email);
 
-            if(actualCode is null)
+            if (actualCode is null)
             {
                 return false;
             }
 
-            return 
-                actualCode.Email == email 
-                && actualCode.Expiration >= DateTime.Now 
+            return
+                actualCode.Email == email
+                && actualCode.Expiration >= DateTime.Now
                 && actualCode.Code == code;
         }
     }

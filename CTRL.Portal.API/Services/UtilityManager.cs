@@ -1,20 +1,26 @@
-﻿using System;
+﻿using CTRL.Portal.API.Configuration;
+using System;
 
 namespace CTRL.Portal.API.Services
 {
     public class UtilityManager : IUtilityManager
     {
-        private static readonly string _pattern = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+        private readonly CodeConfiguration _codeConfiguration;
 
-        public string GenerateCode(int codeLength)
+        public UtilityManager(CodeConfiguration codeConfiguration)
+        {
+            _codeConfiguration = codeConfiguration ?? throw new ArgumentNullException(nameof(codeConfiguration));
+        }
+
+        public string GenerateCode()
         {
             var code = string.Empty;
             var random = new Random();
 
-            for(var i = 0; i < codeLength; i++)
+            for(var i = 0; i < _codeConfiguration.Length; i++)
             {
-                var index = random.Next(_pattern.Length);
-                code += _pattern[index]; 
+                var index = random.Next(_codeConfiguration.Pattern.Length);
+                code += _codeConfiguration.Pattern[index]; 
             }
 
             return code;

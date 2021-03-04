@@ -50,6 +50,7 @@ namespace CTRL.Portal.API.Extensions
         {
             BindConfiguration<EmailConfiguration>(services, config, "EmailConfiguration");
             BindConfiguration<AuthenticationConfiguration>(services, config, "JWT");
+            BindConfiguration<CodeConfiguration>(services, config, "CodeConfiguration");
 
             return services;
         }
