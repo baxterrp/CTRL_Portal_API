@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using CTRL.Portal.API.APIConstants;
+using FluentMigrator;
 using FluentMigrator.SqlServer;
 
 namespace CTRL.Portal.API.CustomMigrations
@@ -8,12 +9,12 @@ namespace CTRL.Portal.API.CustomMigrations
     {
         public override void Down()
         {
-            Delete.Table("UserSettings");
+            Delete.Table(ApiNames.UserSettingsTable);
         }
 
         public override void Up()
         {
-            Create.Table("UserSettings")
+            Create.Table(ApiNames.UserSettingsTable)
                 .WithColumn("Id").AsInt32().NotNullable().PrimaryKey().Identity(1, 1)
                 .WithColumn("Theme").AsString().Nullable()
                 .WithColumn("UserName").AsString().NotNullable();

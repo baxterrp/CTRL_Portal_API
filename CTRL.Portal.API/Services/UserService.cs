@@ -24,16 +24,24 @@ namespace CTRL.Portal.API.Services
 
         public async Task DeleteUser(string userName)
         {
-            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException(nameof(userName));
+            }
 
             var user = await _userManager.FindByNameAsync(userName);
 
-            if (user is null) throw new ResourceNotFoundException($"No user found with name {userName}");
+            if (user is null)
+            {
+                throw new ResourceNotFoundException($"No user found with name {userName}");
+            }
 
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
-                throw new InvalidOperationException($"Could not delete user {user}");
+            {
+                throw new InvalidOperationException($"Could not delete user {userName}");
+            }
         }
 
         public async Task RequestPasswordReset(string email)
@@ -45,14 +53,12 @@ namespace CTRL.Portal.API.Services
 
             var code = await _codeService.SaveCode(email);
 
-            _emailProvider.SendEmail(GetCodeEmail(email, code));
+            await _emailProvider.SendEmail(GetCodeEmail(email, code));
         }
 
         public async Task ResetPassword(ResetPasswordContract resetPasswordContract)
         {
-            if (resetPasswordContract is null) throw new ArgumentNullException(nameof(resetPasswordContract));
-            if (string.IsNullOrWhiteSpace(resetPasswordContract.UserName)) throw new ArgumentException(nameof(resetPasswordContract.UserName));
-            if (string.IsNullOrWhiteSpace(resetPasswordContract.NewPassword)) throw new ArgumentException(nameof(resetPasswordContract.NewPassword));
+            ValidateResetPasswordContract(resetPasswordContract);
 
             var user = await _userManager.FindByNameAsync(resetPasswordContract.UserName);
 
@@ -73,16 +79,27 @@ namespace CTRL.Portal.API.Services
             var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPasswordContract.NewPassword);
 
             if (!result.Succeeded)
+            {
                 throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+            }
         }
 
-        private EmailContract GetCodeEmail(string email, PersistedCode code) => 
-            new EmailContract
+        private void ValidateResetPasswordContract(ResetPasswordContract resetPasswordContract)
+        {
+            if (resetPasswordContract is null) throw new ArgumentNullException(nameof(resetPasswordContract));
+            if (string.IsNullOrWhiteSpace(resetPasswordContract.UserName)) throw new ArgumentException(nameof(resetPasswordContract.UserName));
+            if (string.IsNullOrWhiteSpace(resetPasswordContract.NewPassword)) throw new ArgumentException(nameof(resetPasswordContract.NewPassword));
+            if (string.IsNullOrWhiteSpace(resetPasswordContract.Code)) throw new ArgumentException(nameof(resetPasswordContract.Code));
+        }
+
+        private static ResetPasswordEmailContract GetCodeEmail(string email, PersistedCode code) => 
+            new ResetPasswordEmailContract
             {
                 Header = $"Password Reset Requested for {email}",
-                Message = $"Your password reset code is {code.Code}",
                 Name = email,
-                Recipient = email
+                Recipient = email,
+                ViewName = EmailTemplateNames.ResetPassword,
+                ResetCode = code.Code
             };
     }
 }

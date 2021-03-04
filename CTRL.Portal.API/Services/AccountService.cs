@@ -1,4 +1,5 @@
-﻿using CTRL.Portal.API.Contracts;
+﻿using CTRL.Portal.API.APIConstants;
+using CTRL.Portal.API.Contracts;
 using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Data.Repositories;
 using System;
@@ -13,12 +14,14 @@ namespace CTRL.Portal.API.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICodeService _codeService;
         private readonly IEmailProvider _emailProvider;
+        private readonly string _senderDomain;
 
-        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider)
+        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider, string senderUrl)
         {
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
+            _senderDomain = !string.IsNullOrWhiteSpace(senderUrl) ? senderUrl : throw new ArgumentNullException(nameof(senderUrl));
         }
 
         public async Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract)
@@ -79,18 +82,22 @@ namespace CTRL.Portal.API.Services
                 if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty, 
+                    await _emailProvider.SendEmail(GetInviteEmail(accountInvitation.SenderUserName, accountResponse.Result?.Name ?? string.Empty, 
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
         }
 
-        private EmailContract GetInviteEmail(string accountName, string email, string code) => new EmailContract
+        private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract
         {
             Header = $"You've been invited to {accountName.ToUpper()}",
-            Message = $"{email}, you've been requested to join {accountName.ToUpper()}, use this code to accept {code}",
             Name = email,
-            Recipient = email
+            Recipient = email,
+            ViewName = EmailTemplateNames.InviteToAccount,
+            AccountName = accountName,
+            AcceptInviteCode = code,
+            SenderUserName = sender,
+            SenderUrl = string.Format($"{_senderDomain}{GeneralConstants.AcceptInviteUrl}", code)
         };
     }
 }

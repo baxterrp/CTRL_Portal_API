@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using CTRL.Portal.API.APIConstants;
+using FluentMigrator;
 using FluentMigrator.SqlServer;
 
 namespace CTRL.Portal.API.CustomMigrations
@@ -8,23 +9,23 @@ namespace CTRL.Portal.API.CustomMigrations
     {
         public override void Down()
         {
-            Delete.Table("UserAccounts");
-            Delete.Table("accounts");
+            Delete.Table(ApiNames.UserAccountsTable);
+            Delete.Table(ApiNames.AccountsTable);
         }
 
         public override void Up()
         {
-            Create.Table("Accounts")
+            Create.Table(ApiNames.AccountsTable)
                 .WithColumn("Id").AsString().NotNullable().PrimaryKey()
                 .WithColumn("Name").AsString().NotNullable();
 
-            Create.Table("UserAccounts")
+            Create.Table(ApiNames.UserAccountsTable)
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity(1, 1)
                 .WithColumn("AccountId").AsString().NotNullable().ForeignKey()
                 .WithColumn("UserName").AsString().NotNullable();
 
             Create.ForeignKey()
-                .FromTable("UserAccounts").ForeignColumn("AccountId")
+                .FromTable(ApiNames.UserAccountsTable).ForeignColumn("AccountId")
                 .ToTable("Accounts").PrimaryColumn("Id");
         }
     }
