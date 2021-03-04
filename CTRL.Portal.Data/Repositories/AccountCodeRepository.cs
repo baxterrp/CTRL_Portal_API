@@ -23,17 +23,18 @@ namespace CTRL.Portal.Data.Repositories
             {
                 using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-                var accountCode = await connection.QuerySingleAsync<AccountCode>(SqlQueries.GetAccountIdByCode, new { Code = code });
+                var accountCode = await connection.QuerySingleAsync<AccountCode>(SqlQueries.GetAccountCodeByCode, new { Code = code });
 
                 if (accountCode is null)
                 {
-                    throw new ResourceNotFoundException($"No account Id found for {code}");
+                    throw new NullReferenceException($"No account Id found for {code}");
                 }
 
                 return accountCode;
             }
             catch
             {
+
                 return null;
             }
         }
@@ -41,7 +42,13 @@ namespace CTRL.Portal.Data.Repositories
         public async Task SaveAccountCode(AccountCode accountCode)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            await connection.ExecuteAsync(SqlQueries.AddAccountCode, new { Id = accountCode.Id, AccountId = accountCode.AccountId, Code = accountCode.Code, Accepted = accountCode.Accepted });
+            await connection.ExecuteAsync(SqlQueries.AddAccountCode, new
+            {
+                Id = accountCode.Id,
+                AccountId = accountCode.AccountId,
+                Code = accountCode.Code,
+                Accepted = accountCode.Accepted
+            });
         }
     }
 }

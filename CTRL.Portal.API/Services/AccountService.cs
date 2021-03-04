@@ -69,6 +69,14 @@ namespace CTRL.Portal.API.Services
 
             var accountResponse = _accountRepository.GetAccountById(accountInvitation.AccountId);
 
+            List<Task> tasks = new List<Task>
+            {
+                codeResponse,
+                accountResponse,
+            };
+
+            await Task.WhenAll(tasks);
+
             var accountCode = new AccountCode
             {
                 Id = Guid.NewGuid().ToString(),
@@ -79,15 +87,6 @@ namespace CTRL.Portal.API.Services
 
             var saveAccountCode = _accountCodeRepository.SaveAccountCode(accountCode);
 
-            List<Task> tasks = new List<Task>
-            {
-                codeResponse,
-                accountResponse,
-                saveAccountCode
-
-            };
-
-            await Task.WhenAll(tasks);
 
             if(tasks.All(t => t?.IsCompletedSuccessfully ?? false))
             {
