@@ -7,5 +7,6 @@ namespace CTRL.Portal.Data.Repositories
     {
         Task<AccountCode> GetAccountId(string code);
         Task SaveAccountCode(AccountCode accountCode);
+        Task UpdateCodeStatus(string code);
     }
 }

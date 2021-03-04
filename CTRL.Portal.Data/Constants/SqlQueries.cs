@@ -24,5 +24,6 @@
         public static readonly string GetCode = "SELECT * FROM Codes WHERE [Code] = @Code AND [Email] = @Email AND [Expiration] >= GETDATE()";
         public static readonly string AddAccountCode = "INSERT INTO AccountCodes(Id, AccountId, Code, Accepted) VALUES (@Id, @AccountId, @Code, @Accepted)";
         public static readonly string GetAccountCodeByCode = "SELECT * FROM AccountCodes WHERE [Code] = @Code";
+        public static readonly string UpdateCodeStatus = "UPDATE AccountCodes SET Accepted = 'True' WHERE [Code] = @code";
     }
 }

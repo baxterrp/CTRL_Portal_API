@@ -50,5 +50,12 @@ namespace CTRL.Portal.Data.Repositories
                 Accepted = accountCode.Accepted
             });
         }
+
+        public async Task UpdateCodeStatus(string code)
+        {
+            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
+
+            await connection.ExecuteAsync(SqlQueries.UpdateCodeStatus, new { Code = code });
+        }
     }
 }

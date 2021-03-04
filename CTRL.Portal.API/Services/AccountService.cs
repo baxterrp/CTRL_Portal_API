@@ -120,6 +120,8 @@ namespace CTRL.Portal.API.Services
             var accountId = accountCode.AccountId; //get the accountId out of that object
 
             await _accountRepository.AddUserToAccount(userName, accountId); //add the user to the account
+
+            await _accountCodeRepository.UpdateCodeStatus(code); //Update the code to show that it's been accepted/used
         }
     }
 }
