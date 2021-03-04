@@ -107,21 +107,21 @@ namespace CTRL.Portal.API.Services
             Recipient = email
         };
 
-        public async Task AcceptInvite(string email, string code, string userName) //take in the parameters required
+        public async Task AcceptInvite(AcceptInvitation acceptInvitation) //take in the parameters required
         {
-            var codeIsValid = await _codeService.ValidateCode(email, code); //validate that the email address is good and the code is not expired
+            var codeIsValid = await _codeService.ValidateCode(acceptInvitation.Email, acceptInvitation.Code); //validate that the email address is good and the code is not expired
 
             if (!codeIsValid)
             {
                 throw new InvalidOperationException(ApiMessages.InvalidCredentials); // message to user that it failed
             }
-            var accountCode = await _accountCodeRepository.GetAccountId(code); //use the code to look up the accountCode object
+            var accountCode = await _accountCodeRepository.GetAccountId(acceptInvitation.Code); //use the code to look up the accountCode object
 
             var accountId = accountCode.AccountId; //get the accountId out of that object
 
-            await _accountRepository.AddUserToAccount(userName, accountId); //add the user to the account
+            await _accountRepository.AddUserToAccount(acceptInvitation.UserName, accountId); //add the user to the account
 
-            await _accountCodeRepository.UpdateCodeStatus(code); //Update the code to show that it's been accepted/used
+            await _accountCodeRepository.UpdateCodeStatus(acceptInvitation.Code); //Update the code to show that it's been accepted/used
         }
     }
 }

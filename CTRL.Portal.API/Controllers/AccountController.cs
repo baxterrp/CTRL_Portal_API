@@ -36,9 +36,9 @@ namespace CTRL.Portal.API.Controllers
         }
 
         [HttpPost("acceptInvite")]
-        public async Task<IActionResult> AcceptInvite(string email, string code, string userName)
+        public async Task<IActionResult> AcceptInvite([FromBody]AcceptInvitation acceptInvitation)
         {
-            await _accountService.AcceptInvite(email, code, userName);
+            await _accountService.AcceptInvite(acceptInvitation);
 
             return Ok();
         }
