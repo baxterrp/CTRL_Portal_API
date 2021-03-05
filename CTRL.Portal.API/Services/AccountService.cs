@@ -72,7 +72,7 @@ namespace CTRL.Portal.API.Services
             List<Task> tasks = new List<Task>
             {
                 codeResponse,
-                accountResponse,
+                accountResponse
             };
 
             await Task.WhenAll(tasks);
@@ -86,7 +86,6 @@ namespace CTRL.Portal.API.Services
             };
 
             var saveAccountCode = _accountCodeRepository.SaveAccountCode(accountCode);
-
 
             if(tasks.All(t => t?.IsCompletedSuccessfully ?? false))
             {
