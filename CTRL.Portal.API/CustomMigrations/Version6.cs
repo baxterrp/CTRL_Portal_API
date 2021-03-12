@@ -1,10 +1,9 @@
 ﻿using FluentMigrator;
-using FluentMigrator.SqlServer;
 
 namespace CTRL.Portal.API.CustomMigrations
 {
-    [Migration(5)]
-    public class Version5 : Migration
+    [Migration(6)]
+    public class Version6 : Migration
     {
         public override void Down()
         {
@@ -23,9 +22,9 @@ namespace CTRL.Portal.API.CustomMigrations
                 .FromTable("AccountCodes").ForeignColumn("AccountId")
                 .ToTable("Accounts").PrimaryColumn("Id");
 
-            //Create.ForeignKey()
-            //    .FromTable("AccountCodes").ForeignColumn("Code")
-            //    .ToTable("Codes").PrimaryColumns("Code");
+            Create.ForeignKey()
+                .FromTable("AccountCodes").ForeignColumn("Code")
+                .ToTable("Codes").PrimaryColumns("Id");
         }
     }
 }

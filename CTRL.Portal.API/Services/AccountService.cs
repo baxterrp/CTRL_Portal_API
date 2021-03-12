@@ -55,12 +55,12 @@ namespace CTRL.Portal.API.Services
 
         public async Task InviteUser(AccountInvitation accountInvitation)
         {
-            if(accountInvitation is null)
+            if (accountInvitation is null)
             {
                 throw new ArgumentNullException(nameof(accountInvitation));
             }
 
-            if(string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
+            if (string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
             {
                 throw new ArgumentException("AccountId and Email must not be null or empty", nameof(accountInvitation));
             }
@@ -85,14 +85,14 @@ namespace CTRL.Portal.API.Services
 
             };
 
-            var saveAccountCode = _accountCodeRepository.SaveAccountCode(accountCode);
+            await _accountCodeRepository.SaveAccountCode(accountCode);
 
-            if(tasks.All(t => t?.IsCompletedSuccessfully ?? false))
+            if (tasks.All(t => t?.IsCompletedSuccessfully ?? false))
             {
-                if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
+                if (!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty, 
+                    _emailProvider.SendEmail(GetInviteEmail(accountResponse.Result?.Name ?? string.Empty,
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
@@ -114,12 +114,20 @@ namespace CTRL.Portal.API.Services
             {
                 throw new InvalidOperationException(ApiMessages.InvalidCredentials);
             }
-            var accountCode = await _accountCodeRepository.GetAccountId(acceptInvitation.Code);
+            var accountCode = await _accountCodeRepository.GetAccountCode(acceptInvitation.Code);
 
             var accountId = accountCode.AccountId;
 
-            await _accountRepository.AddUserToAccount(acceptInvitation.UserName, accountId);
-            await _accountCodeRepository.UpdateCodeStatus(acceptInvitation.Code);
+            var addUserResponse = _accountRepository.AddUserToAccount(acceptInvitation.UserName, accountId);
+            var codeStatusResponse = _accountCodeRepository.UpdateCodeStatus(acceptInvitation.Code);
+
+            List<Task> tasks = new List<Task>
+            {
+                addUserResponse,
+                codeStatusResponse
+            };
+
+            await Task.WhenAll(tasks);
         }
     }
 }

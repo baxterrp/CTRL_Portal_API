@@ -42,8 +42,7 @@ namespace CTRL.Portal.Data.Repositories
         public async Task SaveCode(PersistedCode persistCode)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            await connection.ExecuteAsync(SqlQueries.AddCode, new { Id = persistCode.Id, Email = persistCode.Email, Expiration = persistCode.Expiration, Code = persistCode.Code });
+            await connection.ExecuteAsync(SqlQueries.AddCode, persistCode);
         }
-
     }
 }

@@ -1,6 +1,5 @@
 ﻿using CTRL.Portal.API.APIConstants;
 using CTRL.Portal.API.Configuration;
-using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.Middleware;
 using CTRL.Portal.API.Services;
 using CTRL.Portal.Data.Repositories;
