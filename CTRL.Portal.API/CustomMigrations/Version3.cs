@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using CTRL.Portal.API.APIConstants;
+using FluentMigrator;
 
 namespace CTRL.Portal.API.CustomMigrations
 {
@@ -8,12 +9,12 @@ namespace CTRL.Portal.API.CustomMigrations
         public override void Down()
         {
             Delete.Column("DefaultAccount")
-                .FromTable("UserSettings");
+                .FromTable(ApiNames.UserSettingsTable);
         }
 
         public override void Up()
         {
-            Alter.Table("UserSettings")
+            Alter.Table(ApiNames.UserSettingsTable)
                 .AddColumn("DefaultAccount").AsString().Nullable();
         }
     }

@@ -13,20 +13,31 @@ namespace CTRL.Portal.API.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomServices(this IServiceCollection services)
+        public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IAuthenticationTokenManager, AuthenticationTokenManager>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<IAccountService, AccountService>();
+
+            var acceptAccountUrl = configuration.GetValue<string>("ServiceUrls:Spa");
+
+            services.AddScoped<IAccountService, AccountService>(sp => new AccountService(
+                sp.GetRequiredService<IAccountRepository>(),
+                sp.GetRequiredService<ICodeService>(),
+                sp.GetRequiredService<IEmailProvider>(),
+                sp.GetRequiredService<IAccountCodeRepository>(),
+
+                acceptAccountUrl));
+
             services.AddSingleton<IAccountRepository, AccountRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();
             services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
-            services.AddSingleton<IEmailProvider, EmailProvider>();
+            services.AddScoped<IEmailProvider, EmailProvider>();
             services.AddSingleton<IUtilityManager, UtilityManager>();
             services.AddSingleton<ICodeRepository, CodeRepository>();
             services.AddSingleton<ICodeService, CodeService>();
             services.AddSingleton<IAccountCodeRepository, AccountCodeRepository>();
+            services.AddScoped<IViewRenderService, ViewRenderService>();
 
             return services;
         }
@@ -50,6 +61,7 @@ namespace CTRL.Portal.API.Extensions
         {
             BindConfiguration<EmailConfiguration>(services, config, "EmailConfiguration");
             BindConfiguration<AuthenticationConfiguration>(services, config, "JWT");
+            BindConfiguration<CodeConfiguration>(services, config, "CodeConfiguration");
 
             return services;
         }

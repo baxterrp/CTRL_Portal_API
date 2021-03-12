@@ -2,6 +2,6 @@
 {
     public interface IUtilityManager
     {
-        string GenerateCode(int codeLength);
+        string GenerateCode();
     }
 }

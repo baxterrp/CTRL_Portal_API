@@ -29,7 +29,9 @@ namespace CTRL.Portal.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(); 
+            services.AddControllersWithViews();
+            services.AddRazorPages();
             services.AddConfigurations(Configuration);
 
             var connectionString = Configuration.GetConnectionString("CTRL_Connection");
@@ -49,7 +51,7 @@ namespace CTRL.Portal.API
                 .AddDefaultTokenProviders();
 
             services.AddCustomAuthentication();
-            services.AddCustomServices();
+            services.AddCustomServices(Configuration);
 
             services.AddTransient(sp =>
             {

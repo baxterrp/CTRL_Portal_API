@@ -4,21 +4,30 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using System;
+using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Services
 {
     public class EmailProvider : IEmailProvider
     {
         private readonly EmailConfiguration _emailConfiguration;
+        private readonly IViewRenderService _viewRenderService;
 
-        public EmailProvider(EmailConfiguration emailConfiguration)
+        public EmailProvider(EmailConfiguration emailConfiguration, IViewRenderService viewRenderService)
         {
             _emailConfiguration = emailConfiguration ?? throw new ArgumentNullException(nameof(emailConfiguration));
+            _viewRenderService = viewRenderService ?? throw new ArgumentNullException(nameof(viewRenderService));
         }
 
-        public void SendEmail(EmailContract email)
+        public async Task SendEmail<TEmailContract>(TEmailContract email) 
+            where TEmailContract : EmailContract
         {
-            ValidateEmail(email);
+            if(!(email is EmailContract contract))
+            {
+                throw new ArgumentException($"Email model must be of type {nameof(EmailContract)}", nameof(email));
+            }
+
+            ValidateEmail(contract);
 
             try
             {
@@ -32,8 +41,10 @@ namespace CTRL.Portal.API.Services
 
                 message.Subject = email.Header;
 
+                var body = await _viewRenderService.RenderToStringAsync(email.ViewName, email);
+
                 var builder = new BodyBuilder();
-                builder.TextBody = email.Message;
+                builder.HtmlBody = body;
                 message.Body = builder.ToMessageBody();
 
                 using (var client = new SmtpClient())
@@ -54,7 +65,6 @@ namespace CTRL.Portal.API.Services
         {
             if (email is null) throw new ArgumentException(nameof(email));
             if (string.IsNullOrWhiteSpace(email.Header)) throw new ArgumentException(nameof(email.Header));
-            if (string.IsNullOrWhiteSpace(email.Message)) throw new ArgumentException(nameof(email.Message));
             if (string.IsNullOrWhiteSpace(email.Name)) throw new ArgumentException(nameof(email.Name));
             if (string.IsNullOrWhiteSpace(email.Recipient)) throw new ArgumentException(nameof(email.Recipient));
         }
