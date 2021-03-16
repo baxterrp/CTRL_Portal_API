@@ -15,13 +15,15 @@ namespace CTRL.Portal.API.Services
         private readonly ICodeService _codeService;
         private readonly IEmailProvider _emailProvider;
         private readonly string _senderDomain;
+        private readonly IAccountCodeRepository _accountCodeRepository;
 
-        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider, string senderUrl)
+        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider, IAccountCodeRepository accountCodeRepository, string senderUrl)
         {
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
             _senderDomain = !string.IsNullOrWhiteSpace(senderUrl) ? senderUrl : throw new ArgumentNullException(nameof(senderUrl));
+            _accountCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
         }
 
         public async Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract)
@@ -77,15 +79,57 @@ namespace CTRL.Portal.API.Services
 
             await Task.WhenAll(tasks);
 
-            if(tasks.All(t => t?.IsCompletedSuccessfully ?? false))
+            var accountCode = new AccountCode
             {
-                if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
+                Id = Guid.NewGuid().ToString(),
+                AccountId = accountInvitation.AccountId,
+                CodeId = codeResponse.Result.Id
+
+            };
+
+            await _accountCodeRepository.SaveAccountCode(accountCode);
+
+            if (tasks.All(t => t?.IsCompletedSuccessfully ?? false))
+            {
+                if (!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
                     await _emailProvider.SendEmail(GetInviteEmail(accountInvitation.SenderUserName, accountResponse.Result?.Name ?? string.Empty, 
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
+        }
+
+        public async Task AcceptInvite(AcceptInvitation acceptInvitation)
+        {
+            if (acceptInvitation is null)
+            {
+                throw new ArgumentNullException(nameof(acceptInvitation));
+            }
+
+            if (string.IsNullOrWhiteSpace(acceptInvitation.Email) || string.IsNullOrWhiteSpace(acceptInvitation.Code))
+            {
+                throw new ArgumentException("Code and Email must not be null or empty", nameof(acceptInvitation));
+            }
+
+            var codeIsValid = await _codeService.ValidateCode(acceptInvitation.Email, acceptInvitation.Code);
+
+            if (!codeIsValid)
+            {
+                throw new InvalidOperationException(ApiMessages.InvalidCredentials);
+            }
+            var accountCode = await _accountCodeRepository.GetAccountCode(acceptInvitation.Code);
+
+            var addUserResponse = _accountRepository.AddUserToAccount(acceptInvitation.UserName, accountCode.AccountId);
+            var codeStatusResponse = _accountCodeRepository.UpdateCodeStatus(accountCode.CodeId);
+
+            List<Task> tasks = new List<Task>
+            {
+                addUserResponse,
+                codeStatusResponse
+            };
+
+            await Task.WhenAll(tasks);
         }
 
         private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract

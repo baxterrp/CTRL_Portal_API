@@ -25,6 +25,7 @@ namespace CTRL.Portal.API.Extensions
                 sp.GetRequiredService<IAccountRepository>(), 
                 sp.GetRequiredService<ICodeService>(),
                 sp.GetRequiredService<IEmailProvider>(),
+                sp.GetRequiredService<IAccountCodeRepository>(),
                 acceptAccountUrl));
 
             services.AddSingleton<IAccountRepository, AccountRepository>();
@@ -35,6 +36,7 @@ namespace CTRL.Portal.API.Extensions
             services.AddSingleton<ICodeRepository, CodeRepository>();
             services.AddSingleton<ICodeService, CodeService>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
+            services.AddSingleton<IAccountCodeRepository, AccountCodeRepository>();
 
             return services;
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
@@ -31,6 +31,14 @@ namespace CTRL.Portal.API.Controllers
         public async Task<IActionResult> InviteUser([FromBody]AccountInvitation accountInvitation)
         {
             await _accountService.InviteUser(accountInvitation);
+
+            return Ok();
+        }
+
+        [HttpPost("acceptInvite")]
+        public async Task<IActionResult> AcceptInvite([FromBody]AcceptInvitation acceptInvitation)
+        {
+            await _accountService.AcceptInvite(acceptInvitation);
 
             return Ok();
         }
