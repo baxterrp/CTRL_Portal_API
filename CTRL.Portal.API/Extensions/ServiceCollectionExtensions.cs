@@ -22,11 +22,10 @@ namespace CTRL.Portal.API.Extensions
             var acceptAccountUrl = configuration.GetValue<string>("ServiceUrls:Spa");
 
             services.AddScoped<IAccountService, AccountService>(sp => new AccountService(
-                sp.GetRequiredService<IAccountRepository>(),
+                sp.GetRequiredService<IAccountRepository>(), 
                 sp.GetRequiredService<ICodeService>(),
                 sp.GetRequiredService<IEmailProvider>(),
                 sp.GetRequiredService<IAccountCodeRepository>(),
-
                 acceptAccountUrl));
 
             services.AddSingleton<IAccountRepository, AccountRepository>();
@@ -36,8 +35,8 @@ namespace CTRL.Portal.API.Extensions
             services.AddSingleton<IUtilityManager, UtilityManager>();
             services.AddSingleton<ICodeRepository, CodeRepository>();
             services.AddSingleton<ICodeService, CodeService>();
-            services.AddSingleton<IAccountCodeRepository, AccountCodeRepository>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
+            services.AddSingleton<IAccountCodeRepository, AccountCodeRepository>();
 
             return services;
         }

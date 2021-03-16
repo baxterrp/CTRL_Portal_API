@@ -14,16 +14,16 @@ namespace CTRL.Portal.API.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICodeService _codeService;
         private readonly IEmailProvider _emailProvider;
-        private readonly IAccountCodeRepository _accountCodeRepository;
         private readonly string _senderDomain;
+        private readonly IAccountCodeRepository _accountCodeRepository;
 
         public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider, IAccountCodeRepository accountCodeRepository, string senderUrl)
         {
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
-            _accountCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
             _senderDomain = !string.IsNullOrWhiteSpace(senderUrl) ? senderUrl : throw new ArgumentNullException(nameof(senderUrl));
+            _accountCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
         }
 
         public async Task<AccountDisplay> AddAccount(CreateAccountContract createAccountContract)
