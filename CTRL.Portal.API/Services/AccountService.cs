@@ -100,20 +100,18 @@ namespace CTRL.Portal.API.Services
             }
         }
 
-        private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract
-        {
-            Header = $"You've been invited to {accountName.ToUpper()}",
-            Name = email,
-            Recipient = email,
-            ViewName = EmailTemplateNames.InviteToAccount,
-            AccountName = accountName,
-            AcceptInviteCode = code,
-            SenderUserName = sender,
-            SenderUrl = string.Format($"{_senderDomain}{GeneralConstants.AcceptInviteUrl}", code)
-        };
-
         public async Task AcceptInvite(AcceptInvitation acceptInvitation)
         {
+            if (acceptInvitation is null)
+            {
+                throw new ArgumentNullException(nameof(acceptInvitation));
+            }
+
+            if (string.IsNullOrWhiteSpace(acceptInvitation.Email) || string.IsNullOrWhiteSpace(acceptInvitation.Code))
+            {
+                throw new ArgumentException("Code and Email must not be null or empty", nameof(acceptInvitation));
+            }
+
             var codeIsValid = await _codeService.ValidateCode(acceptInvitation.Email, acceptInvitation.Code);
 
             if (!codeIsValid)
@@ -133,5 +131,17 @@ namespace CTRL.Portal.API.Services
 
             await Task.WhenAll(tasks);
         }
+
+        private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract
+        {
+            Header = $"You've been invited to {accountName.ToUpper()}",
+            Name = email,
+            Recipient = email,
+            ViewName = EmailTemplateNames.InviteToAccount,
+            AccountName = accountName,
+            AcceptInviteCode = code,
+            SenderUserName = sender,
+            SenderUrl = string.Format($"{_senderDomain}{GeneralConstants.AcceptInviteUrl}", code)
+        };
     }
 }
