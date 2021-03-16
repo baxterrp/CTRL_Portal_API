@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <Configurations>Debug;Release</Configurations>
     <StartupObject>CTRL.Portal.API.Program</StartupObject>
+    <UserSecretsId>7f30e23d-2035-40dc-b125-db6de9f36c36</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

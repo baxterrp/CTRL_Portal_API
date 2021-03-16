@@ -23,9 +23,9 @@ namespace CTRL.Portal.Data.Repositories
             {
                 using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-                var accountCode = await connection.QuerySingleAsync<AccountCode>(SqlQueries.GetAccountCodeByCode, new { Code = code });
+                var accountId = await connection.QuerySingleAsync<AccountCode>(SqlQueries.GetAccountCodeByCodeId, new { Code = code });
 
-                return accountCode;
+                return accountId;
             }
             catch
             {
@@ -39,11 +39,11 @@ namespace CTRL.Portal.Data.Repositories
             await connection.ExecuteAsync(SqlQueries.AddAccountCode, accountCode);
         }
 
-        public async Task UpdateCodeStatus(string code)
+        public async Task UpdateCodeStatus(string codeId)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-            await connection.ExecuteAsync(SqlQueries.UpdateCodeStatus, new { Code = code });
+            await connection.ExecuteAsync(SqlQueries.UpdateCodeStatus, new { CodeId = codeId });
         }
     }
 }

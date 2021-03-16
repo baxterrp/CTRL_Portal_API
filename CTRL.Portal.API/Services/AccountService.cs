@@ -57,12 +57,12 @@ namespace CTRL.Portal.API.Services
 
         public async Task InviteUser(AccountInvitation accountInvitation)
         {
-            if (accountInvitation is null)
+            if(accountInvitation is null)
             {
                 throw new ArgumentNullException(nameof(accountInvitation));
             }
 
-            if (string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
+            if(string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
             {
                 throw new ArgumentException("AccountId and Email must not be null or empty", nameof(accountInvitation));
             }
@@ -83,7 +83,7 @@ namespace CTRL.Portal.API.Services
             {
                 Id = Guid.NewGuid().ToString(),
                 AccountId = accountInvitation.AccountId,
-                Code = codeResponse.Result.Code
+                CodeId = codeResponse.Result.Id
 
             };
 
@@ -122,10 +122,8 @@ namespace CTRL.Portal.API.Services
             }
             var accountCode = await _accountCodeRepository.GetAccountCode(acceptInvitation.Code);
 
-            var accountId = accountCode.AccountId;
-
-            var addUserResponse = _accountRepository.AddUserToAccount(acceptInvitation.UserName, accountId);
-            var codeStatusResponse = _accountCodeRepository.UpdateCodeStatus(acceptInvitation.Code);
+            var addUserResponse = _accountRepository.AddUserToAccount(acceptInvitation.UserName, accountCode.AccountId);
+            var codeStatusResponse = _accountCodeRepository.UpdateCodeStatus(accountCode.CodeId);
 
             List<Task> tasks = new List<Task>
             {

@@ -15,7 +15,7 @@ namespace CTRL.Portal.API.CustomMigrations
             Create.Table("AccountCodes")
                 .WithColumn("Id").AsString().NotNullable().PrimaryKey()
                 .WithColumn("AccountId").AsString().NotNullable().ForeignKey()
-                .WithColumn("Code").AsString(6).NotNullable().ForeignKey()
+                .WithColumn("CodeId").AsString().NotNullable().ForeignKey()
                 .WithColumn("Accepted").AsBoolean().NotNullable().WithDefaultValue("false");
 
             Create.ForeignKey()
@@ -23,7 +23,7 @@ namespace CTRL.Portal.API.CustomMigrations
                 .ToTable("Accounts").PrimaryColumn("Id");
 
             Create.ForeignKey()
-                .FromTable("AccountCodes").ForeignColumn("Code")
+                .FromTable("AccountCodes").ForeignColumn("CodeId")
                 .ToTable("Codes").PrimaryColumns("Id");
         }
     }

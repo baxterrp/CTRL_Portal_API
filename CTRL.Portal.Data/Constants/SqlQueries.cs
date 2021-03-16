@@ -22,8 +22,10 @@
         public static readonly string AddCode = "INSERT INTO Codes(Id, Email, Expiration, Code) VALUES (@Id, @Email, @Expiration, @Code)";
         public static readonly string GetAccountById = "SELECT * FROM accounts WHERE [Id] = @Id";
         public static readonly string GetCode = "SELECT * FROM Codes WHERE [Code] = @Code AND [Email] = @Email AND [Expiration] >= GETDATE()";
-        public static readonly string AddAccountCode = "INSERT INTO AccountCodes(Id, AccountId, Code, Accepted) VALUES (@Id, @AccountId, @Code, @Accepted)";
-        public static readonly string GetAccountCodeByCode = "SELECT * FROM AccountCodes WHERE [Code] = @Code";
-        public static readonly string UpdateCodeStatus = "UPDATE AccountCodes SET Accepted = 'True' WHERE [Code] = @Code";
+        public static readonly string AddAccountCode = "INSERT INTO AccountCodes(Id, AccountId, CodeId, Accepted) " +
+            "VALUES (@Id, @AccountId, @CodeId, @Accepted)";
+        public static readonly string GetAccountCodeByCodeId = "SELECT * FROM AccountCodes ac " +
+            "INNER JOIN Codes c ON c.Id = ac.CodeId WHERE c.code = @Code";
+        public static readonly string UpdateCodeStatus = "UPDATE AccountCodes SET Accepted = 'True' WHERE [CodeId] = @CodeId";
     }
 }
