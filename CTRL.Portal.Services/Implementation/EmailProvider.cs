@@ -23,7 +23,7 @@ namespace CTRL.Portal.Services.Implementation
         public async Task SendEmail<TEmailContract>(TEmailContract email) 
             where TEmailContract : EmailContract
         {
-            if(!(email is EmailContract contract))
+            if(email is not EmailContract contract)
             {
                 throw new ArgumentException($"Email model must be of type {nameof(EmailContract)}", nameof(email));
             }
@@ -44,17 +44,18 @@ namespace CTRL.Portal.Services.Implementation
 
                 var body = await _viewRenderService.RenderToStringAsync(email.ViewName, email);
 
-                var builder = new BodyBuilder();
-                builder.HtmlBody = body;
+                var builder = new BodyBuilder
+                {
+                    HtmlBody = body
+                };
+
                 message.Body = builder.ToMessageBody();
 
-                using (var client = new SmtpClient())
-                {
-                    client.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.Port, SecureSocketOptions.StartTls);
-                    client.Authenticate(_emailConfiguration.Login, _emailConfiguration.Password);
+                using var client = new SmtpClient();
+                client.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.Port, SecureSocketOptions.StartTls);
+                client.Authenticate(_emailConfiguration.Login, _emailConfiguration.Password);
 
-                    client.Send(message);
-                }
+                client.Send(message);
             }
             catch(Exception e)
             {
@@ -62,9 +63,9 @@ namespace CTRL.Portal.Services.Implementation
             }
         }
 
-        private void ValidateEmail(EmailContract email)
+        private static void ValidateEmail(EmailContract email)
         {
-            if (email is null) throw new ArgumentException(nameof(email));
+            if (email is null) throw new ArgumentNullException(nameof(email));
             if (string.IsNullOrWhiteSpace(email.Header)) throw new ArgumentException(nameof(email.Header));
             if (string.IsNullOrWhiteSpace(email.Name)) throw new ArgumentException(nameof(email.Name));
             if (string.IsNullOrWhiteSpace(email.Recipient)) throw new ArgumentException(nameof(email.Recipient));

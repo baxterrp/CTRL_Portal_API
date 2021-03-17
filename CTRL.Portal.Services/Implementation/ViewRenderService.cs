@@ -41,33 +41,31 @@ namespace CTRL.Portal.Services.Implementation
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-            using (var stringWriter = new StringWriter())
+            using var stringWriter = new StringWriter();
+            var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
+
+            if (viewResult?.View is null)
             {
-                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
-
-                if (viewResult?.View is null)
-                {
-                    throw new InvalidOperationException($"{viewName} does not match any available view");
-                }
-
-                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                };
-
-                var viewContext = new ViewContext(
-                    actionContext,
-                    viewResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
-                    stringWriter,
-                    new HtmlHelperOptions()
-                );
-
-                await viewResult.View.RenderAsync(viewContext);
-
-                return stringWriter.ToString();
+                throw new InvalidOperationException($"{viewName} does not match any available view");
             }
+
+            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+            {
+                Model = model
+            };
+
+            var viewContext = new ViewContext(
+                actionContext,
+                viewResult.View,
+                viewDictionary,
+                new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
+                stringWriter,
+                new HtmlHelperOptions()
+            );
+
+            await viewResult.View.RenderAsync(viewContext);
+
+            return stringWriter.ToString();
         }
     }
 }
