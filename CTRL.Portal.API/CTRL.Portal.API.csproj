@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CTRL.Portal.Common\CTRL.Portal.Common.csproj" />
-    <ProjectReference Include="..\CTRL.Portal.Data\CTRL.Portal.Data.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Middleware\CTRL.Portal.Middleware.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Migrations\CTRL.Portal.Migrations.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Services\CTRL.Portal.Services.csproj" />
