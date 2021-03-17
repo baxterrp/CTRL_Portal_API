@@ -3,11 +3,14 @@ using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.Middleware;
 using CTRL.Portal.API.Services;
 using CTRL.Portal.Data.Repositories;
+using CTRL.Portal.Migrations;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace CTRL.Portal.API.Extensions
 {
@@ -43,15 +46,10 @@ namespace CTRL.Portal.API.Extensions
 
         public static IServiceCollection AddFluentMigrator(this IServiceCollection services, string connectionString)
         {
-            var migrationAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(t => t.IsClass && t.Namespace == "CTRL.Portal.API.CustomMigrations")
-                .Select(x => x.Assembly).ToArray();
-
             services.AddFluentMigratorCore()
                 .ConfigureRunner(runner => runner.AddSqlServer()
                     .WithGlobalConnectionString(connectionString)
-                    .ScanIn(migrationAssemblies).For.Migrations());
+                    .ScanIn(MigrationEngine.GetCustomMigrationAssemblies()).For.Migrations());
 
             return services;
         }

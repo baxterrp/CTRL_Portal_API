@@ -1,20 +1,20 @@
-﻿using CTRL.Portal.API.APIConstants;
+﻿using CTRL.Portal.Migrations.Metadata;
 using FluentMigrator;
 using System;
 
-namespace CTRL.Portal.API.CustomMigrations
+namespace CTRL.Portal.Migrations.Custom
 {
     [Migration(5)]
     public class Version5 : Migration
     {
         public override void Down()
         {
-            Delete.Table(ApiNames.ModulesTable);
+            Delete.Table(Names.ModulesTable);
         }
 
         public override void Up()
         {
-            Create.Table(ApiNames.ModulesTable)
+            Create.Table(Names.ModulesTable)
                 .WithColumn("Id").AsString().NotNullable().PrimaryKey()
                 .WithColumn("Name").AsString().NotNullable();
 
@@ -22,7 +22,7 @@ namespace CTRL.Portal.API.CustomMigrations
                 new
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = ApiNames.InventoryModule
+                    Name = Names.InventoryModule
                 });
         }
     }

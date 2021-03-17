@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CTRL.Portal.Data\CTRL.Portal.Data.csproj" />
+    <ProjectReference Include="..\CTRL.Portal.Migrations\CTRL.Portal.Migrations.csproj" />
   </ItemGroup>
 
 

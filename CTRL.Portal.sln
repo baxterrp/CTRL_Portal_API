@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CTRL.Portal.API", "CTRL.Por
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CTRL.Portal.Data", "CTRL.Portal.Data\CTRL.Portal.Data.csproj", "{30A82102-2788-46A9-8D96-F603B753BB24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTRL.Portal.API.UnitTests", "CTRL.Portal.API.UnitTests\CTRL.Portal.API.UnitTests.csproj", "{A080AE21-F170-4545-A854-9B2E87B0E713}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CTRL.Portal.API.UnitTests", "CTRL.Portal.API.UnitTests\CTRL.Portal.API.UnitTests.csproj", "{A080AE21-F170-4545-A854-9B2E87B0E713}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTRL.Portal.Migrations", "CTRL.Portal.Migrations\CTRL.Portal.Migrations.csproj", "{4C104B14-6922-4F14-A66B-FEA6D3A0CC6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,12 @@ Global
 		{A080AE21-F170-4545-A854-9B2E87B0E713}.Development|Any CPU.Build.0 = Debug|Any CPU
 		{A080AE21-F170-4545-A854-9B2E87B0E713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A080AE21-F170-4545-A854-9B2E87B0E713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C104B14-6922-4F14-A66B-FEA6D3A0CC6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C104B14-6922-4F14-A66B-FEA6D3A0CC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C104B14-6922-4F14-A66B-FEA6D3A0CC6B}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C104B14-6922-4F14-A66B-FEA6D3A0CC6B}.Development|Any CPU.Build.0 = Debug|Any CPU
+		{4C104B14-6922-4F14-A66B-FEA6D3A0CC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C104B14-6922-4F14-A66B-FEA6D3A0CC6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

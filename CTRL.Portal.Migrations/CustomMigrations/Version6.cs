@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace CTRL.Portal.API.CustomMigrations
+namespace CTRL.Portal.Migrations.Custom
 {
     [Migration(6)]
     public class Version6 : Migration
