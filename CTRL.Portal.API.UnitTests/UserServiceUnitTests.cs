@@ -264,7 +264,7 @@ namespace CTRL.Portal.API.UnitTests
             return new Mock<UserManager<ApplicationUser>>(userStore.Object, null, null, null, null, null, null, null, null);
         }
 
-        private static PersistedCode GetResetCode() => new PersistedCode
+        private static PersistedCodeDto GetResetCode() => new PersistedCodeDto
         {
             Code = _testCode,
             Id = _testGuid,

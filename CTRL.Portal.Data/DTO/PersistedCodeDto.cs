@@ -2,7 +2,7 @@
 
 namespace CTRL.Portal.Data.DTO
 {
-    public class PersistedCode : BaseDto
+    public class PersistedCodeDto : BaseDto
     {
         public string Email { get; set; }
         public DateTime Expiration { get; set; }

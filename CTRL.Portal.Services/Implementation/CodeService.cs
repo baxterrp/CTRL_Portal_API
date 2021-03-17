@@ -20,9 +20,9 @@ namespace CTRL.Portal.Services.Implementation
             _utilityManager = utilityManager ?? throw new ArgumentNullException(nameof(utilityManager));
         }
 
-        public async Task<PersistedCode> SaveCode(string email)
+        public async Task<PersistedCodeDto> SaveCode(string email)
         {
-            var code = new PersistedCode
+            var code = new PersistedCodeDto
             {
                 Code = _utilityManager.GenerateCode(),
                 Expiration = DateTime.Now.Add(TimeSpan.Parse(_codeConfiguration.Expires)),

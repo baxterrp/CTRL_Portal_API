@@ -5,7 +5,7 @@ namespace CTRL.Portal.Services.Interfaces
 {
     public interface ICodeService
     {
-        Task<PersistedCode> SaveCode(string email);
+        Task<PersistedCodeDto> SaveCode(string email);
         Task<bool> ValidateCode(string email, string code);
     }
 }

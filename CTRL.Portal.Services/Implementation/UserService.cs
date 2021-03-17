@@ -94,7 +94,7 @@ namespace CTRL.Portal.Services.Implementation
             if (string.IsNullOrWhiteSpace(resetPasswordContract.Code)) throw new ArgumentException(nameof(resetPasswordContract.Code));
         }
 
-        private static ResetPasswordEmailContract GetCodeEmail(string email, PersistedCode code) => 
+        private static ResetPasswordEmailContract GetCodeEmail(string email, PersistedCodeDto code) => 
             new ResetPasswordEmailContract
             {
                 Header = $"Password Reset Requested for {email}",
