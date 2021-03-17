@@ -1,5 +1,4 @@
-﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.Common.Constants;
+﻿using CTRL.Portal.Common.Constants;
 using CTRL.Portal.Common.Contracts;
 using CTRL.Portal.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -14,7 +13,7 @@ using System.Security.Principal;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace CTRL.Portal.API.Middleware
+namespace CTRL.Portal.Middleware
 {
     public class ApiAuthenticationHandler : AuthenticationHandler<ApiAuthenticationOptions>
     {
@@ -60,7 +59,7 @@ namespace CTRL.Portal.API.Middleware
                         return Task.FromResult(AuthenticateResult.Fail(ApiMessages.Unauthorized));
                     }
 
-                    var ticket = new AuthenticationTicket(principal as ClaimsPrincipal, ApiNames.ApiAuthenticationScheme);
+                    var ticket = new AuthenticationTicket(principal as ClaimsPrincipal, "ApiAuthentication");
 
                     return Task.FromResult(AuthenticateResult.Success(ticket));
                 }

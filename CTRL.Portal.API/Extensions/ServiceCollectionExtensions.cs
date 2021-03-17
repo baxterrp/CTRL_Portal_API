@@ -1,6 +1,5 @@
-﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.API.Middleware;
-using CTRL.Portal.Data.Repositories;
+﻿using CTRL.Portal.Data.Repositories;
+using CTRL.Portal.Middleware;
 using CTRL.Portal.Migrations;
 using CTRL.Portal.Services.Configuration;
 using CTRL.Portal.Services.Implementation;
@@ -62,14 +61,16 @@ namespace CTRL.Portal.API.Extensions
 
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services)
         {
+            var schemeName = "ApiAuthentication";
+
             services
                 .AddAuthentication(options =>
                 {
-                    options.DefaultAuthenticateScheme = ApiNames.ApiAuthenticationScheme;
-                    options.DefaultChallengeScheme = ApiNames.ApiAuthenticationScheme;
-                    options.DefaultSignInScheme = ApiNames.ApiAuthenticationScheme;
+                    options.DefaultAuthenticateScheme = schemeName;
+                    options.DefaultChallengeScheme = schemeName;
+                    options.DefaultSignInScheme = schemeName;
                 })
-                .AddScheme<ApiAuthenticationOptions, ApiAuthenticationHandler>(ApiNames.ApiAuthenticationScheme, "Api Authenticaiton", null);
+                .AddScheme<ApiAuthenticationOptions, ApiAuthenticationHandler>(schemeName, "Api Authenticaiton", null);
 
             return services;
         }

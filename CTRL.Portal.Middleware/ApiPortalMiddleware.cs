@@ -1,6 +1,5 @@
 ﻿using CTRL.Portal.Common.Contracts;
 using CTRL.Portal.Common.Exceptions;
-using CTRL.Portal.Data.DataExceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -8,7 +7,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
-namespace CTRL.Portal.API.Middleware
+namespace CTRL.Portal.Middleware
 {
     public class ApiPortalMiddleware
     {

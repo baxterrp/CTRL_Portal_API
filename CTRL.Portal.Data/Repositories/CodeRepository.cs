@@ -1,6 +1,6 @@
-﻿using CTRL.Portal.Data.Configuration;
+﻿using CTRL.Portal.Common.Exceptions;
+using CTRL.Portal.Data.Configuration;
 using CTRL.Portal.Data.Constants;
-using CTRL.Portal.Data.DataExceptions;
 using CTRL.Portal.Data.DTO;
 using Dapper;
 using System;

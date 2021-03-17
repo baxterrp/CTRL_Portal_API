@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CTRL.Portal.Data.DataExceptions
+namespace CTRL.Portal.Common.Exceptions
 {
     public class ResourceNotFoundException : Exception
     {

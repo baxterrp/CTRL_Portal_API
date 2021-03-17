@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CTRL.Portal.Common\CTRL.Portal.Common.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Data\CTRL.Portal.Data.csproj" />
+    <ProjectReference Include="..\CTRL.Portal.Middleware\CTRL.Portal.Middleware.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Migrations\CTRL.Portal.Migrations.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Services\CTRL.Portal.Services.csproj" />
   </ItemGroup>

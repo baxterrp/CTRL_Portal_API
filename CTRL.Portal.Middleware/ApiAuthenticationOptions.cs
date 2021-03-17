@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 
-namespace CTRL.Portal.API.Middleware
+namespace CTRL.Portal.Middleware
 {
     public class ApiAuthenticationOptions : AuthenticationSchemeOptions
     {
