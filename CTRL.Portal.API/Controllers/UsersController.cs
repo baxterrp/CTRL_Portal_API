@@ -1,5 +1,5 @@
-﻿using CTRL.Portal.API.Contracts;
-using CTRL.Portal.API.Services;
+﻿using CTRL.Portal.Common.Contracts;
+using CTRL.Portal.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

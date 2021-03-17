@@ -1,6 +1,7 @@
 ﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.API.Contracts;
-using CTRL.Portal.API.Services;
+using CTRL.Portal.Common.Constants;
+using CTRL.Portal.Common.Contracts;
+using CTRL.Portal.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

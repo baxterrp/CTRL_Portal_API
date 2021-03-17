@@ -1,5 +1,5 @@
-﻿using CTRL.Portal.API.Contracts;
-using CTRL.Portal.API.Exceptions;
+﻿using CTRL.Portal.Common.Contracts;
+using CTRL.Portal.Common.Exceptions;
 using CTRL.Portal.Data.DataExceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;

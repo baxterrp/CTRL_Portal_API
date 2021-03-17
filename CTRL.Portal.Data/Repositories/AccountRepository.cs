@@ -20,7 +20,7 @@ namespace CTRL.Portal.Data.Repositories
             _databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
         }
 
-        public async Task AddAccount(string userName, AccountDisplay account)
+        public async Task AddAccount(string userName, AccountDto account)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
@@ -28,17 +28,17 @@ namespace CTRL.Portal.Data.Repositories
             await connection.ExecuteAsync(SqlQueries.AddAccountToUser, new { UserName = userName, AccountId = account.Id });
         }
 
-        public async Task<AccountDisplay> GetAccountById(string accountId)
+        public async Task<AccountDto> GetAccountById(string accountId)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-            return await connection.QuerySingleAsync<AccountDisplay>(SqlQueries.GetAccountById, new { Id = accountId });
+            return await connection.QuerySingleAsync<AccountDto>(SqlQueries.GetAccountById, new { Id = accountId });
         }
 
-        public async Task<IEnumerable<AccountDisplay>> GetAllAccountsByUser(string userName)
+        public async Task<IEnumerable<AccountDto>> GetAllAccountsByUser(string userName)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            var accounts = await connection.QueryAsync<AccountDisplay>(SqlQueries.GetAllAccountsQuery, new { UserName = userName });
+            var accounts = await connection.QueryAsync<AccountDto>(SqlQueries.GetAllAccountsQuery, new { UserName = userName });
 
             if (!accounts?.Any() ?? true) throw new ResourceNotFoundException($"No accounts found with userName : {userName}");
 

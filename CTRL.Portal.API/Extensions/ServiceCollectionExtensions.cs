@@ -1,16 +1,13 @@
 ﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.API.Configuration;
 using CTRL.Portal.API.Middleware;
-using CTRL.Portal.API.Services;
 using CTRL.Portal.Data.Repositories;
 using CTRL.Portal.Migrations;
+using CTRL.Portal.Services.Configuration;
+using CTRL.Portal.Services.Implementation;
+using CTRL.Portal.Services.Interfaces;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace CTRL.Portal.API.Extensions
 {
