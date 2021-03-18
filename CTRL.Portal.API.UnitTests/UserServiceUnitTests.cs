@@ -1,9 +1,10 @@
-﻿using CTRL.Portal.API.APIConstants;
-using CTRL.Portal.API.Contracts;
-using CTRL.Portal.API.EntityContexts;
-using CTRL.Portal.API.Services;
-using CTRL.Portal.Data.DataExceptions;
+﻿using CTRL.Portal.API.EntityContexts;
+using CTRL.Portal.Common.Constants;
+using CTRL.Portal.Common.Contracts;
+using CTRL.Portal.Common.Exceptions;
 using CTRL.Portal.Data.DTO;
+using CTRL.Portal.Services.Implementation;
+using CTRL.Portal.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -263,7 +264,7 @@ namespace CTRL.Portal.API.UnitTests
             return new Mock<UserManager<ApplicationUser>>(userStore.Object, null, null, null, null, null, null, null, null);
         }
 
-        private static PersistedCode GetResetCode() => new PersistedCode
+        private static PersistedCodeDto GetResetCode() => new PersistedCodeDto
         {
             Code = _testCode,
             Id = _testGuid,

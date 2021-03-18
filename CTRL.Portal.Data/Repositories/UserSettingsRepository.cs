@@ -18,15 +18,15 @@ namespace CTRL.Portal.Data.Repositories
             _databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
         }
 
-        public async Task<UserSettings> GetUserSettings(string userName)
+        public async Task<UserSettingsDto> GetUserSettings(string userName)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            return (await connection.QueryAsync<UserSettings>(SqlQueries.GetUserSettings, new { UserName = userName }))
+            return (await connection.QueryAsync<UserSettingsDto>(SqlQueries.GetUserSettings, new { UserName = userName }))
                 ?.FirstOrDefault() 
-                ?? new UserSettings();
+                ?? new UserSettingsDto();
         }
 
-        public async Task SaveSettings(UserSettings userSettings)
+        public async Task SaveSettings(UserSettingsDto userSettings)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
             await connection.ExecuteAsync(SqlQueries.SaveUserSettings, 

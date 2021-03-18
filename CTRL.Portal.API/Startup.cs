@@ -1,13 +1,13 @@
-using CTRL.Portal.API.Configuration;
-using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Extensions;
-using CTRL.Portal.API.Middleware;
-using CTRL.Portal.API.Services;
+using CTRL.Portal.Common.Contracts;
 using CTRL.Portal.Data.Configuration;
+using CTRL.Portal.Middleware;
+using CTRL.Portal.Services.Configuration;
+using CTRL.Portal.Services.EntityContexts;
+using CTRL.Portal.Services.Implementation;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -77,7 +77,6 @@ namespace CTRL.Portal.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app, 
-            IWebHostEnvironment env, 
             IMigrationRunner runner,
             RoleManager<IdentityRole> roleManager)
         {
