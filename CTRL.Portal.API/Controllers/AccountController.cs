@@ -1,5 +1,5 @@
-﻿using CTRL.Portal.API.Contracts;
-using CTRL.Portal.API.Services;
+﻿using CTRL.Portal.Common.Contracts;
+using CTRL.Portal.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -31,6 +31,14 @@ namespace CTRL.Portal.API.Controllers
         public async Task<IActionResult> InviteUser([FromBody]AccountInvitation accountInvitation)
         {
             await _accountService.InviteUser(accountInvitation);
+
+            return Ok();
+        }
+
+        [HttpPost("acceptInvite")]
+        public async Task<IActionResult> AcceptInvite([FromBody]AcceptInvitation acceptInvitation)
+        {
+            await _accountService.AcceptInvite(acceptInvitation);
 
             return Ok();
         }
