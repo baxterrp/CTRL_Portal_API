@@ -1,7 +1,68 @@
 ﻿@model CTRL.Portal.API.Contracts.AccountInviteEmailContract
 
-<p>@Model.Recipient,</p>
+@*<p>@Model.Recipient,</p>
 <p>Account invite for @Model.AccountName</p>
 <p>Sent by @Model.SenderUserName</p>
 <p>With code @Model.AcceptInviteCode</p>
-<p>With url @Model.SenderUrl</p>
+<p>With url @Model.SenderUrl</p>*@
+
+<table align='center' border='0' cellpadding='0' cellspacing='0'>
+    <tbody>
+        <tr>
+            <td>
+                <table align='center' bgcolor='#ffffff' border='0' cellpadding='0' cellspacing='0' style='background-color:#fff; width:610px;'>
+                    <tbody>
+                        <tr>
+                            <td><img src="https://via.placeholder.com/610x100?text=CTRL" alt="CTRL Logo"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table align='center' border='0' cellpadding='0' cellspacing='0' style='background-color:#fff; width:610px; color: #022449;'>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table align='center' border='0' cellpadding='0' cellspacing='0' style='background-color:#fff; margin:0 auto; width:610px;'>
+                                    <tbody>
+                                        <tr>
+                                            <td width='45px'></td>
+                                            <td align='center' width='520px'>
+                                                <div style='font-family:Arial, Helvetica, sans-serif; font-weight: 400; letter-spacing: 1.5px; font-size: 18px;'>
+                                                    <p>You have been invited to join the <span style="color: #F27D42">@Model.AccountName</span> group by <span style="color: #F27D42">@Model.SenderUserName</span>. Click the button bellow to accept the invite.</p>
+
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td bgcolor="#ffffff" align="center" style="padding: 50px 10px;">
+                                                                <table border="0" cellspacing="0" cellpadding="0">
+                                                                    <tr>
+                                                                        <td align="center" style="border-radius: 30px;" bgcolor="#F27D42">
+                                                                            <a href="@Model.SenderUrl" target="_blank" style="font-size: 20px; font-family: Arial, Helvetica, sans-serif; font-weight: 400; color: #ffffff; text-decoration: none; padding: 20px 185px; border-radius: 30px; border: 1px solid #F27D42; display: inline-block;">
+                                                                                JOIN
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+
+                                                    <p>
+                                                        Or copy/paste this URL: <a href='@Model.SenderUrl' target='_blank' style='color: #F27D42'>@Model.SenderUrl</a>
+                                                    </p>
+                                                    <hr style='border: 0.5px solid #E3E3E3; margin: 100px 0px 22px 0px; border-bottom: none;' />
+                                                    <p style='margin: 0px;'>
+                                                        Ran into some trouble? Received this email by mistake? Please <a href="#" target="_blank" style="color: #F27D42">contact the CTRL team.</a>
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td width='45px'></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
