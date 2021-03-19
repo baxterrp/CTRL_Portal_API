@@ -1,4 +1,4 @@
-﻿using CTRL.Portal.API.APIConstants;
+﻿using CTRL.Portal.Migrations.Metadata;
 using FluentMigrator;
 
 namespace CTRL.Portal.API.CustomMigrations
@@ -8,18 +8,18 @@ namespace CTRL.Portal.API.CustomMigrations
     {
         public override void Down()
         {
-            Delete.Table(ApiNames.SubscriptionsTable);
+            Delete.Table(Names.SubscriptionsTable);
         }
 
         public override void Up()
         {
-            Create.Table(ApiNames.SubscriptionsTable)
+            Create.Table(Names.SubscriptionsTable)
                 .WithColumn("Id").AsString().NotNullable().PrimaryKey()
                 .WithColumn("AccountId").AsString().NotNullable().ForeignKey()
                 .WithColumn("Name").AsString();
 
             Create.ForeignKey()
-                .FromTable(ApiNames.SubscriptionsTable).ForeignColumn("AccountId")
+                .FromTable(Names.SubscriptionsTable).ForeignColumn("AccountId")
                 .ToTable("Accounts").PrimaryColumn("Id");
         }
     }

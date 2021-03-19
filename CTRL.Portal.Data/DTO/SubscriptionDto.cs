@@ -1,6 +1,6 @@
-﻿namespace CTRL.Portal.API.Contracts
+﻿namespace CTRL.Portal.Data.DTO
 {
-    public class SubscriptionContract
+    public class SubscriptionDto : BaseDto
     {
         public string AccountId { get; set; }
         public string Name { get; set; }

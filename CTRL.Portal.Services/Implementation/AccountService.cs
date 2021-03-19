@@ -45,12 +45,36 @@ namespace CTRL.Portal.Services.Implementation
             };
         }
 
-        public Task CreateSubscription(SubscriptionContract subscriptionContract)
+        public async Task CreateSubscription(SubscriptionContract subscriptionContract)
         {
-            throw new NotImplementedException();
+            if (subscriptionContract is null)
+            {
+                throw new ArgumentNullException(nameof(subscriptionContract));
+            }
+
+            if (string.IsNullOrWhiteSpace(subscriptionContract.AccountId))
+            {
+                throw new ArgumentException("AccountId cannot be null or empty", nameof(subscriptionContract.AccountId));
+            }
+
+            if (string.IsNullOrWhiteSpace(subscriptionContract.Name))
+            {
+                throw new ArgumentException("Name cannot be null or empty", nameof(subscriptionContract.Name));
+            }
+
+            var subscriptionId = Guid.NewGuid().ToString();
+
+            var subscriptionDto = new SubscriptionDto
+            {
+                Id = subscriptionId,
+                AccountId = subscriptionContract.AccountId,
+                Name = subscriptionContract.Name
+            };
+
+            await _accountRepository.CreateSubscription(subscriptionDto);
         }
 
-        public async Task<IEnumerable<AccountDisplay>> GetAccounts(string userName)
+        public async Task<IEnumerable<Account>> GetAccounts(string userName)
         {
             try
             {
