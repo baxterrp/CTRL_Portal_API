@@ -37,6 +37,7 @@ namespace CTRL.Portal.API.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var validationParameters = GetValidationParameters();
+
             try
             {
                 return tokenHandler.ValidateToken(token, validationParameters, out SecurityToken securityToken);

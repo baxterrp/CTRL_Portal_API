@@ -24,7 +24,9 @@ namespace CTRL.Portal.API.Controllers
         {
             if (userSettings is null ||
                 string.IsNullOrWhiteSpace(userSettings?.UserName))
+            {
                 throw new ArgumentException(nameof(userSettings));
+            }
 
             await _userSettingsService.SaveSettings(userSettings);
 

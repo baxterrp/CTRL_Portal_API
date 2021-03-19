@@ -44,7 +44,6 @@ namespace CTRL.Portal.API.Middleware
 
             var stringifiedApiException = JsonConvert.SerializeObject(apiErrorResponse);
 
-
             await httpContext.Response.WriteAsync(stringifiedApiException);
         }
 

@@ -41,6 +41,11 @@ namespace CTRL.Portal.API.Services
             };
         }
 
+        public Task CreateSubscription(SubscriptionContract subscriptionContract)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<AccountDisplay>> GetAccounts(string userName)
         {
             try
@@ -55,12 +60,12 @@ namespace CTRL.Portal.API.Services
 
         public async Task InviteUser(AccountInvitation accountInvitation)
         {
-            if(accountInvitation is null)
+            if (accountInvitation is null)
             {
                 throw new ArgumentNullException(nameof(accountInvitation));
             }
 
-            if(string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
+            if (string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
             {
                 throw new ArgumentException("AccountId and Email must not be null or empty", nameof(accountInvitation));
             }
@@ -77,27 +82,28 @@ namespace CTRL.Portal.API.Services
 
             await Task.WhenAll(tasks);
 
-            if(tasks.All(t => t?.IsCompletedSuccessfully ?? false))
+            if (tasks.All(t => t?.IsCompletedSuccessfully ?? false))
             {
-                if(!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
+                if (!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    await _emailProvider.SendEmail(GetInviteEmail(accountInvitation.SenderUserName, accountResponse.Result?.Name ?? string.Empty, 
+                    await _emailProvider.SendEmail(GetInviteEmail(accountInvitation.SenderUserName, accountResponse.Result?.Name ?? string.Empty,
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }
         }
 
-        private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract
-        {
-            Header = $"You've been invited to {accountName.ToUpper()}",
-            Name = email,
-            Recipient = email,
-            ViewName = EmailTemplateNames.InviteToAccount,
-            AccountName = accountName,
-            AcceptInviteCode = code,
-            SenderUserName = sender,
-            SenderUrl = string.Format($"{_senderDomain}{GeneralConstants.AcceptInviteUrl}", code)
-        };
+        private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code)
+            => new AccountInviteEmailContract
+            {
+                Header = $"You've been invited to {accountName.ToUpper()}",
+                Name = email,
+                Recipient = email,
+                ViewName = EmailTemplateNames.InviteToAccount,
+                AccountName = accountName,
+                AcceptInviteCode = code,
+                SenderUserName = sender,
+                SenderUrl = string.Format($"{_senderDomain}{GeneralConstants.AcceptInviteUrl}", code)
+            };
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace CTRL.Portal.API.Configuration
+﻿namespace CTRL.Portal.API.Configuration
 {
     public class EmailConfiguration
     {
@@ -8,7 +6,6 @@ namespace CTRL.Portal.API.Configuration
         public int Port { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-
         public string SenderUrl { get; set; }
         public string SenderName { get; set; }
     }

@@ -7,7 +7,6 @@ namespace CTRL.Portal.API.EntityContexts
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

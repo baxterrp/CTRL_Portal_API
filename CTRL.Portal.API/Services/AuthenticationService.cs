@@ -2,7 +2,6 @@
 using CTRL.Portal.API.Contracts;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Exceptions;
-using CTRL.Portal.API.Middleware;
 using CTRL.Portal.Data.DTO;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -23,9 +22,9 @@ namespace CTRL.Portal.API.Services
         private readonly IUserSettingsService _userSettingsService;
 
         public AuthenticationService(
-            UserManager<ApplicationUser> userManager, 
-            IAuthenticationTokenManager authenticationTokenManager, 
-            IAccountService accountService, 
+            UserManager<ApplicationUser> userManager,
+            IAuthenticationTokenManager authenticationTokenManager,
+            IAccountService accountService,
             IUserSettingsService userSettingsService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -80,8 +79,10 @@ namespace CTRL.Portal.API.Services
         {
             ValidateOnRegister(registrationContract);
 
-            if((await _userManager.FindByNameAsync(registrationContract.UserName) != null))
+            if (await _userManager.FindByNameAsync(registrationContract.UserName) != null)
+            {
                 throw new InvalidOperationException(ApiMessages.UserAlreadyExists);
+            }
 
             var user = new ApplicationUser
             {
@@ -109,7 +110,7 @@ namespace CTRL.Portal.API.Services
             {
                 if (createUserResult?.Result?.Errors?.Any() ?? true)
                 {
-                    throw new InvalidOperationException(string.Join(",", 
+                    throw new InvalidOperationException(string.Join(",",
                         createUserResult?.Result?.Errors?.Select(e => e.Description) ?? new List<string> { ApiMessages.UnhandledErrorCreatingUser }));
                 }
 
@@ -119,17 +120,23 @@ namespace CTRL.Portal.API.Services
 
         private static void ValidateOnLogin(LoginContract loginContract)
         {
-            if (loginContract is null 
-                ||string.IsNullOrWhiteSpace(loginContract.UserName)
-                ||string.IsNullOrWhiteSpace(loginContract.Password)) throw new ArgumentException(nameof(loginContract));
+            if (loginContract is null
+                || string.IsNullOrWhiteSpace(loginContract.UserName)
+                || string.IsNullOrWhiteSpace(loginContract.Password))
+            {
+                throw new ArgumentException(nameof(loginContract));
+            }
         }
 
         private static void ValidateOnRegister(RegistrationContract registrationContract)
         {
-            if (registrationContract is null 
-                ||string.IsNullOrWhiteSpace(registrationContract.UserName) 
-                ||string.IsNullOrWhiteSpace(registrationContract.Email) 
-                ||string.IsNullOrWhiteSpace(registrationContract.Password)) throw new ArgumentException(nameof(registrationContract));
+            if (registrationContract is null
+                || string.IsNullOrWhiteSpace(registrationContract.UserName)
+                || string.IsNullOrWhiteSpace(registrationContract.Email)
+                || string.IsNullOrWhiteSpace(registrationContract.Password))
+            {
+                throw new ArgumentException(nameof(registrationContract));
+            }
         }
     }
 }

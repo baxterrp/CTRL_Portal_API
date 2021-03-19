@@ -16,7 +16,11 @@ namespace CTRL.Portal.API.Services
 
         public async Task<UserSettings> GetUserSettings(string userName)
         {
-            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException(nameof(userName));
+            }
+
             return await _userSettingsRepository.GetUserSettings(userName);
         }
 
@@ -24,7 +28,9 @@ namespace CTRL.Portal.API.Services
         {
             if (userSettings is null
                 || string.IsNullOrWhiteSpace(userSettings?.UserName))
-            throw new ArgumentException(nameof(userSettings));
+            {
+                throw new ArgumentException(nameof(userSettings));
+            }
 
             await _userSettingsRepository.SaveSettings(userSettings);
         }
