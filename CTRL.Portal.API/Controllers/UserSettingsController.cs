@@ -1,5 +1,5 @@
-﻿using CTRL.Portal.API.Services;
-using CTRL.Portal.Data.DTO;
+﻿using CTRL.Portal.Data.DTO;
+using CTRL.Portal.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,7 +20,7 @@ namespace CTRL.Portal.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveSettings([FromBody] UserSettings userSettings)
+        public async Task<IActionResult> SaveSettings([FromBody] UserSettingsDto userSettings)
         {
             if (userSettings is null ||
                 string.IsNullOrWhiteSpace(userSettings?.UserName))

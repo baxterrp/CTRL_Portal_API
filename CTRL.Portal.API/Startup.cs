@@ -1,10 +1,12 @@
-using CTRL.Portal.API.Configuration;
-using CTRL.Portal.API.Contracts;
+using CTRL.Authentication.Configuration;
+using CTRL.Authentication.Contracts;
+using CTRL.Authentication.Middleware;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Extensions;
-using CTRL.Portal.API.Middleware;
-using CTRL.Portal.API.Services;
+using CTRL.Portal.Common.Contracts;
 using CTRL.Portal.Data.Configuration;
+using CTRL.Portal.Services.EntityContexts;
+using CTRL.Portal.Services.Implementation;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -72,7 +74,7 @@ namespace CTRL.Portal.API
         }
 
         public void Configure(
-            IApplicationBuilder app,
+            IApplicationBuilder app, 
             IMigrationRunner runner,
             RoleManager<IdentityRole> roleManager)
         {

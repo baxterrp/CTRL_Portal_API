@@ -1,6 +1,6 @@
-﻿using CTRL.Portal.Data.Configuration;
+﻿using CTRL.Authentication.Exceptions;
+using CTRL.Portal.Data.Configuration;
 using CTRL.Portal.Data.Constants;
-using CTRL.Portal.Data.DataExceptions;
 using CTRL.Portal.Data.DTO;
 using Dapper;
 using System;
@@ -18,13 +18,13 @@ namespace CTRL.Portal.Data.Repositories
             _databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
         }
 
-        public async Task<PersistedCode> GetCode(string code, string email)
+        public async Task<PersistedCodeDto> GetCode(string code, string email)
         {
             try
             {
                 using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-                var persistedCode = await connection.QuerySingleAsync<PersistedCode>(SqlQueries.GetCode, new { Code = code, Email = email });
+                var persistedCode = await connection.QuerySingleAsync<PersistedCodeDto>(SqlQueries.GetCode, new { Code = code, Email = email });
 
                 if (persistedCode is null)
                 {
@@ -39,11 +39,10 @@ namespace CTRL.Portal.Data.Repositories
             }
         }
 
-        public async Task SaveCode(PersistedCode persistCode)
+        public async Task SaveCode(PersistedCodeDto persistCode)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            await connection.ExecuteAsync(SqlQueries.AddCode, new { Id = persistCode.Id, Email = persistCode.Email, Expiration = persistCode.Expiration, Code = persistCode.Code });
+            await connection.ExecuteAsync(SqlQueries.AddCode, persistCode);
         }
-
     }
 }

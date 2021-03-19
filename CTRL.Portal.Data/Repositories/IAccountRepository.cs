@@ -6,8 +6,9 @@ namespace CTRL.Portal.Data.Repositories
 {
     public interface IAccountRepository
     {
-        Task AddAccount(string userName, AccountDisplay account);
-        Task<IEnumerable<AccountDisplay>> GetAllAccountsByUser(string userName);
-        Task<AccountDisplay> GetAccountById(string accountId);
+        Task AddAccount(string userName, AccountDto account);
+        Task<IEnumerable<AccountDto>> GetAllAccountsByUser(string userName);
+        Task<AccountDto> GetAccountById(string accountId);
+        Task AddUserToAccount(string userName, string accountId);
     }
 }

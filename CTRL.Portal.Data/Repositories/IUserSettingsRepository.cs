@@ -5,7 +5,7 @@ namespace CTRL.Portal.Data.Repositories
 {
     public interface IUserSettingsRepository
     {
-        Task SaveSettings(UserSettings userSettings);
-        Task<UserSettings> GetUserSettings(string userName);
+        Task SaveSettings(UserSettingsDto userSettings);
+        Task<UserSettingsDto> GetUserSettings(string userName);
     }
 }
