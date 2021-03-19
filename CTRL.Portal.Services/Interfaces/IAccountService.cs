@@ -10,5 +10,7 @@ namespace CTRL.Portal.Services.Interfaces
         Task<IEnumerable<Account>> GetAccounts(string userName);
         Task InviteUser(AccountInvitation accountInvitation);
         Task AcceptInvite(AcceptInvitation acceptInvitation);
+        Task CreateSubscription(SubscriptionContract subscriptionContract);
+
     }
 }
