@@ -25,12 +25,9 @@ namespace CTRL.Portal.API
 
         public IConfiguration Configuration { get; }
 
-
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(); 
+            services.AddControllers();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddConfigurations(Configuration);
@@ -40,6 +37,7 @@ namespace CTRL.Portal.API
             {
                 ConnectionString = connectionString
             };
+
             services.AddSingleton(dbConfig);
             services.AddFluentMigrator(connectionString);
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -75,7 +73,6 @@ namespace CTRL.Portal.API
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app, 
             IMigrationRunner runner,

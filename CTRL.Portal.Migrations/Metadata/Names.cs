@@ -11,5 +11,6 @@
         public const string UserSettingsTable = "UserSettings";
         public const string CodesTable = "Codes";
         public const string ModulesTable = "Modules";
+        public const string SubscriptionsTable = "Subscriptions";
     }
 }

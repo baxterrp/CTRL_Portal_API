@@ -17,15 +17,25 @@ namespace CTRL.Portal.Services.Implementation
 
         public async Task<UserSettingsDto> GetUserSettings(string userName)
         {
-            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException(nameof(userName));
+            }
+
             return await _userSettingsRepository.GetUserSettings(userName);
         }
 
         public async Task SaveSettings(UserSettingsDto userSettings)
         {
-            if (userSettings is null
-                || string.IsNullOrWhiteSpace(userSettings?.UserName))
-            throw new ArgumentException(nameof(userSettings));
+            if (userSettings is null)
+            {
+                throw new ArgumentNullException(nameof(userSettings));
+            }
+
+            if(string.IsNullOrWhiteSpace(userSettings.UserName))
+            {
+                throw new ArgumentException("Username cannot be null or empty", nameof(userSettings.UserName));
+            }
 
             await _userSettingsRepository.SaveSettings(userSettings);
         }

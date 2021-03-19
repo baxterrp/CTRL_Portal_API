@@ -51,5 +51,12 @@ namespace CTRL.Portal.Data.Repositories
 
             await connection.ExecuteAsync(SqlQueries.AddAccountToUser, new { UserName = userName, AccountId = accountId });
         }
+
+        public async Task CreateSubscription(SubscriptionDto subscriptionDto)
+        {
+            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
+
+            await connection.ExecuteAsync(SqlQueries.AddSubscription, subscriptionDto);
+        }
     }
 }

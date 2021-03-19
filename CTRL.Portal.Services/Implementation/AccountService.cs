@@ -45,6 +45,35 @@ namespace CTRL.Portal.Services.Implementation
             };
         }
 
+        public async Task CreateSubscription(SubscriptionContract subscriptionContract)
+        {
+            if (subscriptionContract is null)
+            {
+                throw new ArgumentNullException(nameof(subscriptionContract));
+            }
+
+            if (string.IsNullOrWhiteSpace(subscriptionContract.AccountId))
+            {
+                throw new ArgumentException("AccountId cannot be null or empty", nameof(subscriptionContract.AccountId));
+            }
+
+            if (string.IsNullOrWhiteSpace(subscriptionContract.Name))
+            {
+                throw new ArgumentException("Name cannot be null or empty", nameof(subscriptionContract.Name));
+            }
+
+            var subscriptionId = Guid.NewGuid().ToString();
+
+            var subscriptionDto = new SubscriptionDto
+            {
+                Id = subscriptionId,
+                AccountId = subscriptionContract.AccountId,
+                Name = subscriptionContract.Name
+            };
+
+            await _accountRepository.CreateSubscription(subscriptionDto);
+        }
+
         public async Task<IEnumerable<Account>> GetAccounts(string userName)
         {
             try
@@ -63,12 +92,12 @@ namespace CTRL.Portal.Services.Implementation
 
         public async Task InviteUser(AccountInvitation accountInvitation)
         {
-            if(accountInvitation is null)
+            if (accountInvitation is null)
             {
                 throw new ArgumentNullException(nameof(accountInvitation));
             }
 
-            if(string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
+            if (string.IsNullOrWhiteSpace(accountInvitation.Email) || string.IsNullOrWhiteSpace(accountInvitation.AccountId))
             {
                 throw new ArgumentException("AccountId and Email must not be null or empty", nameof(accountInvitation));
             }
@@ -100,7 +129,7 @@ namespace CTRL.Portal.Services.Implementation
                 if (!string.IsNullOrWhiteSpace(accountResponse?.Result?.Name) &&
                     !string.IsNullOrWhiteSpace(codeResponse?.Result?.Code))
                 {
-                    await _emailProvider.SendEmail(GetInviteEmail(accountInvitation.SenderUserName, accountResponse.Result?.Name ?? string.Empty, 
+                    await _emailProvider.SendEmail(GetInviteEmail(accountInvitation.SenderUserName, accountResponse.Result?.Name ?? string.Empty,
                         accountInvitation.Email, codeResponse?.Result?.Code ?? string.Empty));
                 }
             }

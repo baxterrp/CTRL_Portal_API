@@ -10,5 +10,6 @@ namespace CTRL.Portal.Data.Repositories
         Task<IEnumerable<AccountDto>> GetAllAccountsByUser(string userName);
         Task<AccountDto> GetAccountById(string accountId);
         Task AddUserToAccount(string userName, string accountId);
+        Task CreateSubscription(SubscriptionDto subscriptionDto);
     }
 }
