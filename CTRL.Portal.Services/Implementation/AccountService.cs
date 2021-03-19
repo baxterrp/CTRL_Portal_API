@@ -28,7 +28,7 @@ namespace CTRL.Portal.Services.Implementation
             _accountCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
         }
 
-        public async Task<AccountDto> AddAccount(CreateAccountContract createAccountContract)
+        public async Task<Account> AddAccount(CreateAccountContract createAccountContract)
         {
             var accountId = Guid.NewGuid().ToString();
 
@@ -38,22 +38,26 @@ namespace CTRL.Portal.Services.Implementation
                 Name = createAccountContract.Name
             });
 
-            return new AccountDto
+            return new Account
             {
                 Id = accountId,
                 Name = createAccountContract.Name
             };
         }
 
-        public async Task<IEnumerable<AccountDto>> GetAccounts(string userName)
+        public async Task<IEnumerable<Account>> GetAccounts(string userName)
         {
             try
             {
-                return await _accountRepository.GetAllAccountsByUser(userName) ?? new List<AccountDto>();
+                return (await _accountRepository.GetAllAccountsByUser(userName) ?? new List<AccountDto>()).Select(a => new Account
+                {
+                    Id = a.Id,
+                    Name = a.Name
+                });
             }
             catch
             {
-                return new List<AccountDto>();
+                return new List<Account>();
             }
         }
 
