@@ -1,4 +1,4 @@
-﻿using CTRL.Portal.Common.Exceptions;
+﻿using CTRL.Authentication.Exceptions;
 using CTRL.Portal.Data.Configuration;
 using CTRL.Portal.Data.Constants;
 using CTRL.Portal.Data.DTO;

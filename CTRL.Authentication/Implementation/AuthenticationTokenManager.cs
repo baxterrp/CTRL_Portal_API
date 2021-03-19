@@ -1,6 +1,5 @@
-﻿using CTRL.Portal.Common.Contracts;
-using CTRL.Portal.Services.Configuration;
-using CTRL.Portal.Services.Interfaces;
+﻿using CTRL.Authentication.Configuration;
+using CTRL.Authentication.Contracts;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 
-namespace CTRL.Portal.Services.Implementation
+namespace CTRL.Authentication.Implementation
 {
     public class AuthenticationTokenManager : IAuthenticationTokenManager
     {

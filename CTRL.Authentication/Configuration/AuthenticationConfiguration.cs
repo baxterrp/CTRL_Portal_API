@@ -1,4 +1,4 @@
-﻿namespace CTRL.Portal.Services.Configuration
+﻿namespace CTRL.Authentication.Configuration
 {
     public class AuthenticationConfiguration
     {

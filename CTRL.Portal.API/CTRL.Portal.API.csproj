@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CTRL.Authentication" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -18,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CTRL.Portal.Common\CTRL.Portal.Common.csproj" />
-    <ProjectReference Include="..\CTRL.Portal.Middleware\CTRL.Portal.Middleware.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Migrations\CTRL.Portal.Migrations.csproj" />
     <ProjectReference Include="..\CTRL.Portal.Services\CTRL.Portal.Services.csproj" />
   </ItemGroup>

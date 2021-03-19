@@ -1,7 +1,8 @@
-﻿using CTRL.Portal.API.EntityContexts;
+﻿using CTRL.Authentication;
+using CTRL.Authentication.Exceptions;
+using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.Common.Constants;
 using CTRL.Portal.Common.Contracts;
-using CTRL.Portal.Common.Exceptions;
 using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -133,7 +134,7 @@ namespace CTRL.Portal.Services.Implementation
         {
             if (loginContract is null 
                 ||string.IsNullOrWhiteSpace(loginContract.UserName)
-                ||string.IsNullOrWhiteSpace(loginContract.Password)) throw new ArgumentException(nameof(loginContract));
+                ||string.IsNullOrWhiteSpace(loginContract.Password)) throw new ArgumentNullException(nameof(loginContract));
         }
 
         private static void ValidateOnRegister(RegistrationContract registrationContract)
@@ -141,7 +142,7 @@ namespace CTRL.Portal.Services.Implementation
             if (registrationContract is null 
                 ||string.IsNullOrWhiteSpace(registrationContract.UserName) 
                 ||string.IsNullOrWhiteSpace(registrationContract.Email) 
-                ||string.IsNullOrWhiteSpace(registrationContract.Password)) throw new ArgumentException(nameof(registrationContract));
+                ||string.IsNullOrWhiteSpace(registrationContract.Password)) throw new ArgumentNullException(nameof(registrationContract));
         }
     }
 }

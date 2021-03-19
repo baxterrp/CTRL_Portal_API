@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CTRL.Portal.Common.Exceptions
+namespace CTRL.Authentication.Exceptions
 {
     public class InvalidLoginAttemptException : Exception
     {

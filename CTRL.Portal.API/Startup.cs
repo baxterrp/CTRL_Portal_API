@@ -1,9 +1,10 @@
+using CTRL.Authentication.Configuration;
+using CTRL.Authentication.Contracts;
+using CTRL.Authentication.Middleware;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.API.Extensions;
 using CTRL.Portal.Common.Contracts;
 using CTRL.Portal.Data.Configuration;
-using CTRL.Portal.Middleware;
-using CTRL.Portal.Services.Configuration;
 using CTRL.Portal.Services.EntityContexts;
 using CTRL.Portal.Services.Implementation;
 using FluentMigrator.Runner;

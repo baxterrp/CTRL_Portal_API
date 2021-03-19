@@ -1,5 +1,7 @@
-﻿using CTRL.Portal.Data.Repositories;
-using CTRL.Portal.Middleware;
+﻿using CTRL.Authentication;
+using CTRL.Authentication.Configuration;
+using CTRL.Authentication.Implementation;
+using CTRL.Portal.Data.Repositories;
 using CTRL.Portal.Migrations;
 using CTRL.Portal.Services.Configuration;
 using CTRL.Portal.Services.Implementation;

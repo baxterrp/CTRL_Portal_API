@@ -1,7 +1,7 @@
-﻿using CTRL.Portal.API.EntityContexts;
+﻿using CTRL.Authentication.Exceptions;
+using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.Common.Constants;
 using CTRL.Portal.Common.Contracts;
-using CTRL.Portal.Common.Exceptions;
 using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Services.Constants;
 using CTRL.Portal.Services.Interfaces;
