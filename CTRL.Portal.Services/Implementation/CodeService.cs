@@ -22,6 +22,11 @@ namespace CTRL.Portal.Services.Implementation
 
         public async Task<PersistedCodeDto> SaveCode(string email)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
             var code = new PersistedCodeDto
             {
                 Code = _utilityManager.GenerateCode(),

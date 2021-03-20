@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CTRL.Portal.API.UnitTests
+namespace CTRL.Portal.Services.UnitTests
 {
     [TestClass]
     public class UserServiceUnitTests
