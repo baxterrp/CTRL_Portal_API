@@ -2,7 +2,7 @@
 {
     public class SubscriptionContract
     {
-        public string AccountId { get; set; }
+        public string BusinessEntityId { get; set; }
         public string Name { get; set; }
     }
 }

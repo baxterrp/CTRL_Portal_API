@@ -7,7 +7,7 @@ namespace CTRL.Portal.Common.Contracts
     {
         public string Token { get; set; }
         public string UserName { get; set; }
-        public IEnumerable<Account> Accounts { get; set; }
+        public IEnumerable<BusinessEntity> Businesses { get; set; }
         public UserSettings UserSettings { get; set; }
         public HttpStatusCode Status { get; set; }
         public string Message { get; set; }

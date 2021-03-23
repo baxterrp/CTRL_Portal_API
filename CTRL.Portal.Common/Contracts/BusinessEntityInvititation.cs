@@ -1,6 +1,6 @@
 ﻿namespace CTRL.Portal.Common.Contracts
 {
-    public class AccountInvitation
+    public class BusinessEntityInvititation
     {
         public string SenderUserName { get; set; }
         public string AccountId { get; set; }

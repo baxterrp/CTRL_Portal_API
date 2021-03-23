@@ -1,8 +1,8 @@
 ﻿namespace CTRL.Portal.Data.DTO
 {
-    public class AccountCode : BaseDto
+    public class BusinessEntityCode : BaseDto
     {
-        public string AccountId { get; set; }
+        public string BusinessEntityId { get; set; }
         public string CodeId { get; set; }
         public bool Accepted { get; set; }
     }

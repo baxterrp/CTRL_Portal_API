@@ -20,13 +20,13 @@ namespace CTRL.Portal.Services.Implementation
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAuthenticationTokenManager _authenticationTokenManager;
-        private readonly IAccountService _accountService;
+        private readonly IBusinessEntityService _accountService;
         private readonly IUserSettingsService _userSettingsService;
 
         public AuthenticationService(
             UserManager<ApplicationUser> userManager,
             IAuthenticationTokenManager authenticationTokenManager,
-            IAccountService accountService,
+            IBusinessEntityService accountService,
             IUserSettingsService userSettingsService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -52,7 +52,7 @@ namespace CTRL.Portal.Services.Implementation
 
                 authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-                var accountResponse = _accountService.GetAccounts(user.UserName);
+                var accountResponse = _accountService.GetBusinessEntities(user.UserName);
                 var userSettingsResponse = _userSettingsService.GetUserSettings(user.UserName);
 
                 List<Task> tasks = new List<Task>
@@ -67,7 +67,7 @@ namespace CTRL.Portal.Services.Implementation
                 {
                     UserName = userSettingsResponse.Result.UserName,
                     Id = userSettingsResponse.Result.Id,
-                    DefaultAccount = userSettingsResponse.Result.DefaultAccount,
+                    DefaultAccount = userSettingsResponse.Result.DefaultBusinessEntity,
                     Theme = userSettingsResponse.Result.Theme
                 } : null;
 
@@ -78,11 +78,11 @@ namespace CTRL.Portal.Services.Implementation
                     Token = new JwtSecurityTokenHandler().WriteToken(_authenticationTokenManager.GenerateToken(authClaims)),
                     UserName = loginContract.UserName,
                     UserSettings = userSettings,
-                    Accounts = (accountResponse?.IsCompletedSuccessfully ?? false) ? accountResponse.Result.Select(a => new Account
+                    Businesses = (accountResponse?.IsCompletedSuccessfully ?? false) ? accountResponse.Result.Select(a => new BusinessEntity
                     {
                         Id = a.Id,
                         Name = a.Name
-                    }) : new List<Account>()
+                    }) : new List<BusinessEntity>()
                 };
             }
 
