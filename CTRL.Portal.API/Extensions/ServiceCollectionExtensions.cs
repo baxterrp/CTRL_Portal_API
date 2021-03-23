@@ -1,12 +1,14 @@
 ﻿using CTRL.Authentication;
 using CTRL.Authentication.Configuration;
 using CTRL.Authentication.Implementation;
+using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.Data.Repositories;
 using CTRL.Portal.Migrations;
 using CTRL.Portal.Services.Configuration;
 using CTRL.Portal.Services.Implementation;
 using CTRL.Portal.Services.Interfaces;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,18 +18,26 @@ namespace CTRL.Portal.API.Extensions
     {
         public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IAuthenticationTokenManager, AuthenticationTokenManager>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IUserService, UserService>();
+            var spaUrl = configuration.GetValue<string>("ServiceUrls:Spa");
 
-            var acceptAccountUrl = configuration.GetValue<string>("ServiceUrls:Spa");
+            services.AddTransient<IAuthenticationTokenManager, AuthenticationTokenManager>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>(sp => new AuthenticationService(
+                spaUrl, 
+                sp.GetRequiredService<UserManager<ApplicationUser>>(), 
+                sp.GetRequiredService<ICodeService>(),
+                sp.GetRequiredService<IEmailProvider>(), 
+                sp.GetRequiredService<IAuthenticationTokenManager>(), 
+                sp.GetRequiredService<IBusinessEntityService>(), 
+                sp.GetRequiredService<IUserSettingsService>()));
+
+            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IBusinessEntityService, BusinessEntityService>(sp => new BusinessEntityService(
                 sp.GetRequiredService<IBusinessEntityRepository>(), 
                 sp.GetRequiredService<ICodeService>(),
                 sp.GetRequiredService<IEmailProvider>(),
                 sp.GetRequiredService<IBusinessEntityCodeRepository>(),
-                acceptAccountUrl));
+                spaUrl));
 
             services.AddSingleton<IBusinessEntityRepository, BusinessEntityRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();

@@ -4,6 +4,7 @@ using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.Common.Constants;
 using CTRL.Portal.Common.Contracts;
 using CTRL.Portal.Data.DTO;
+using CTRL.Portal.Services.Constants;
 using CTRL.Portal.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -18,21 +19,48 @@ namespace CTRL.Portal.Services.Implementation
 {
     public class AuthenticationService : IAuthenticationService
     {
+        private readonly string _senderDomain;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICodeService _codeService;
+        private readonly IEmailProvider _emailProvider;
         private readonly IAuthenticationTokenManager _authenticationTokenManager;
         private readonly IBusinessEntityService _accountService;
         private readonly IUserSettingsService _userSettingsService;
 
         public AuthenticationService(
-            UserManager<ApplicationUser> userManager,
-            IAuthenticationTokenManager authenticationTokenManager,
-            IBusinessEntityService accountService,
+            string senderDomain,
+            UserManager<ApplicationUser> userManager, 
+            ICodeService codeService,
+            IEmailProvider emailProvider, 
+            IAuthenticationTokenManager authenticationTokenManager, 
+            IBusinessEntityService accountService, 
             IUserSettingsService userSettingsService)
         {
+            _senderDomain = !string.IsNullOrWhiteSpace(senderDomain) ? senderDomain : throw new ArgumentNullException(nameof(senderDomain)); 
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
+            _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
             _authenticationTokenManager = authenticationTokenManager ?? throw new ArgumentNullException(nameof(authenticationTokenManager));
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
             _userSettingsService = userSettingsService ?? throw new ArgumentNullException(nameof(userSettingsService));
+        }
+
+        public async Task ActivateUserAccount(UserAccountActivationContract userAccountActivationContract)
+        {
+            ValidateOnActivate(userAccountActivationContract);
+
+            var user = await _userManager.FindByNameAsync(userAccountActivationContract.UserName);
+
+            if(user is null)
+            {
+                throw new ResourceNotFoundException($"No user found with name {userAccountActivationContract.UserName}");
+            }
+
+            var settings = await _userSettingsService.GetUserSettings(user.UserName);
+
+            settings.IsActive = true;
+
+            await _userSettingsService.SaveSettings(settings);
         }
 
         public async Task<AuthenticationResponseContract> Login(LoginContract loginContract)
@@ -68,8 +96,14 @@ namespace CTRL.Portal.Services.Implementation
                     UserName = userSettingsResponse.Result.UserName,
                     Id = userSettingsResponse.Result.Id,
                     DefaultAccount = userSettingsResponse.Result.DefaultBusinessEntity,
-                    Theme = userSettingsResponse.Result.Theme
+                    Theme = userSettingsResponse.Result.Theme,
+                    IsActive = userSettingsResponse.Result.IsActive
                 } : null;
+
+                if (!userSettings.IsActive)
+                {
+                    throw new InvalidLoginAttemptException("Must activate account to login");
+                }
 
                 return new AuthenticationResponseContract
                 {
@@ -110,17 +144,20 @@ namespace CTRL.Portal.Services.Implementation
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 
+            var verficationCodeResult = _codeService.SaveCode(registrationContract.Email);
             var createUserResult = _userManager.CreateAsync(user, registrationContract.Password);
             var saveSettingsResult = _userSettingsService.SaveSettings(new UserSettingsDto
             {
                 UserName = user.UserName,
-                Theme = null
+                Theme = null,
+                IsActive = false
             });
 
             List<Task> tasks = new List<Task>
             {
                 createUserResult,
-                saveSettingsResult
+                saveSettingsResult,
+                verficationCodeResult
             };
 
             await Task.WhenAll(tasks);
@@ -135,6 +172,16 @@ namespace CTRL.Portal.Services.Implementation
 
                 throw new InvalidOperationException(ApiMessages.UnhandledErrorCreatingUser);
             }
+
+            await _emailProvider.SendEmail(new VerifyRegistrationEmail
+            {
+                Header = "Verify your account registration",
+                Name = registrationContract.UserName,
+                Recipient = registrationContract.Email,
+                ViewName = EmailTemplateNames.RegistrationVerification,
+                VerificationLink = 
+                    $"{_senderDomain}{string.Format(GeneralConstants.VerifiyAccountRegistration, registrationContract.UserName, verficationCodeResult.Result.Code)}" 
+            });
         }
 
         private static void ValidateOnLogin(LoginContract loginContract)
@@ -155,6 +202,24 @@ namespace CTRL.Portal.Services.Implementation
                 || string.IsNullOrWhiteSpace(registrationContract.Password))
             {
                 throw new ArgumentException(nameof(registrationContract));
+            }
+        }
+
+        private void ValidateOnActivate(UserAccountActivationContract userAccountActivationContract)
+        {
+            if (userAccountActivationContract is null)
+            {
+                throw new ArgumentNullException(nameof(userAccountActivationContract));
+            }
+
+            if (string.IsNullOrWhiteSpace(userAccountActivationContract.UserName))
+            {
+                throw new ArgumentException("Username cannot be null or empty", nameof(userAccountActivationContract.UserName));
+            }
+
+            if (string.IsNullOrWhiteSpace(userAccountActivationContract.Code))
+            {
+                throw new ArgumentException("Code cannot be null or empty", nameof(userAccountActivationContract.Code));
             }
         }
     }

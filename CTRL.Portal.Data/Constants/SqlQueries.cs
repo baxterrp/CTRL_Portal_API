@@ -7,10 +7,11 @@
             @"IF EXISTS (SELECT * FROM UserSettings WHERE [UserName] = @UserName)
                 UPDATE UserSettings
                     SET [Theme] = @Theme,
-                        [DefaultBusiness] = @DefaultBusiness
+                        [DefaultBusiness] = @DefaultBusiness,
+                        [IsActive] = @IsActive
                 WHERE [UserName] = @UserName;
             ELSE
-                INSERT INTO UserSettings (UserName, Theme, DefaultBusiness) VALUES (@UserName, @Theme, @DefaultBusiness)
+                INSERT INTO UserSettings (UserName, Theme, DefaultBusiness, IsActive) VALUES (@UserName, @Theme, @DefaultBusiness, @IsActive)
             ";
         public static readonly string AddBusinessEntity = "INSERT INTO BusinessEntities (id, name) VALUES (@Id, @Name)";
         public static readonly string AddBusinessEntityToUser = "INSERT INTO UserBusinessEntities (UserName, BusinessEntityId) VALUES (@UserName, @BusinessEntityId)";

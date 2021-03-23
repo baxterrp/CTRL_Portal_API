@@ -7,5 +7,6 @@ namespace CTRL.Portal.Services.Interfaces
     {
         Task Register(RegistrationContract registrationContract);
         Task<AuthenticationResponseContract> Login(LoginContract loginContract);
+        Task ActivateUserAccount(UserAccountActivationContract userAccountActivationContract);
     }
 }
