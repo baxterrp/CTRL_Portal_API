@@ -95,7 +95,12 @@ namespace CTRL.Portal.Services.Implementation
 
             if (await _userManager.FindByNameAsync(registrationContract.UserName) != null)
             {
-                throw new InvalidOperationException(ApiMessages.UserAlreadyExists);
+                throw new InvalidOperationException(string.Format(ApiMessages.UserAlreadyExists, "UserName"));
+            }
+
+            if (await _userManager.FindByEmailAsync(registrationContract.Email) != null)
+            {
+                throw new InvalidOperationException(string.Format(ApiMessages.UserAlreadyExists, "Email"));
             }
 
             var user = new ApplicationUser
