@@ -45,6 +45,24 @@ namespace CTRL.Portal.Services.Implementation
             _userSettingsService = userSettingsService ?? throw new ArgumentNullException(nameof(userSettingsService));
         }
 
+        public async Task ActivateUserAccount(UserAccountActivationContract userAccountActivationContract)
+        {
+            ValidateOnActivate(userAccountActivationContract);
+
+            var user = await _userManager.FindByNameAsync(userAccountActivationContract.UserName);
+
+            if(user is null)
+            {
+                throw new ResourceNotFoundException($"No user found with name {userAccountActivationContract.UserName}");
+            }
+
+            var settings = await _userSettingsService.GetUserSettings(user.UserName);
+
+            settings.IsActive = true;
+
+            await _userSettingsService.SaveSettings(settings);
+        }
+
         public async Task<AuthenticationResponseContract> Login(LoginContract loginContract)
         {
             ValidateOnLogin(loginContract);
@@ -131,7 +149,8 @@ namespace CTRL.Portal.Services.Implementation
             var saveSettingsResult = _userSettingsService.SaveSettings(new UserSettingsDto
             {
                 UserName = user.UserName,
-                Theme = null
+                Theme = null,
+                IsActive = false
             });
 
             List<Task> tasks = new List<Task>
@@ -183,6 +202,24 @@ namespace CTRL.Portal.Services.Implementation
                 || string.IsNullOrWhiteSpace(registrationContract.Password))
             {
                 throw new ArgumentException(nameof(registrationContract));
+            }
+        }
+
+        private void ValidateOnActivate(UserAccountActivationContract userAccountActivationContract)
+        {
+            if (userAccountActivationContract is null)
+            {
+                throw new ArgumentNullException(nameof(userAccountActivationContract));
+            }
+
+            if (string.IsNullOrWhiteSpace(userAccountActivationContract.UserName))
+            {
+                throw new ArgumentException("Username cannot be null or empty", nameof(userAccountActivationContract.UserName));
+            }
+
+            if (string.IsNullOrWhiteSpace(userAccountActivationContract.Code))
+            {
+                throw new ArgumentException("Code cannot be null or empty", nameof(userAccountActivationContract.Code));
             }
         }
     }

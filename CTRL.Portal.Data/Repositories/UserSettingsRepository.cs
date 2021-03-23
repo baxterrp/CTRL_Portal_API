@@ -34,7 +34,8 @@ namespace CTRL.Portal.Data.Repositories
                 { 
                     UserName = userSettings.UserName, 
                     Theme = userSettings.Theme,
-                    DefaultBusiness = userSettings.DefaultBusinessEntity
+                    DefaultBusiness = userSettings.DefaultBusinessEntity,
+                    IsActive = userSettings.IsActive
                 });
         }
     }

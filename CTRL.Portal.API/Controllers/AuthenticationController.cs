@@ -28,5 +28,13 @@ namespace CTRL.Portal.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginContract loginContract) =>
             Ok(await _authenticationService.Login(loginContract));
+
+        [HttpPost("activate")]
+        public async Task<IActionResult> Activate(UserAccountActivationContract userAccountActivationContract)
+        {
+            await _authenticationService.ActivateUserAccount(userAccountActivationContract);
+
+            return Ok();
+        }
     }
 }
