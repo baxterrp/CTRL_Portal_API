@@ -29,14 +29,14 @@ namespace CTRL.Portal.Services.Implementation
 
         public AuthenticationService(
             string senderDomain,
-            UserManager<ApplicationUser> userManager, 
+            UserManager<ApplicationUser> userManager,
             ICodeService codeService,
-            IEmailProvider emailProvider, 
-            IAuthenticationTokenManager authenticationTokenManager, 
-            IBusinessEntityService accountService, 
+            IEmailProvider emailProvider,
+            IAuthenticationTokenManager authenticationTokenManager,
+            IBusinessEntityService accountService,
             IUserSettingsService userSettingsService)
         {
-            _senderDomain = !string.IsNullOrWhiteSpace(senderDomain) ? senderDomain : throw new ArgumentNullException(nameof(senderDomain)); 
+            _senderDomain = !string.IsNullOrWhiteSpace(senderDomain) ? senderDomain : throw new ArgumentNullException(nameof(senderDomain));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
@@ -51,9 +51,16 @@ namespace CTRL.Portal.Services.Implementation
 
             var user = await _userManager.FindByNameAsync(userAccountActivationContract.UserName);
 
-            if(user is null)
+            if (user is null)
             {
                 throw new ResourceNotFoundException($"No user found with name {userAccountActivationContract.UserName}");
+            }
+
+            var codeIsValid = await _codeService.ValidateCode(user.Email, userAccountActivationContract.Code);
+
+            if (!codeIsValid)
+            {
+                throw new InvalidOperationException($"{userAccountActivationContract.Code} is not a valid code for {user.UserName}");
             }
 
             var settings = await _userSettingsService.GetUserSettings(user.UserName);
@@ -179,8 +186,8 @@ namespace CTRL.Portal.Services.Implementation
                 Name = registrationContract.UserName,
                 Recipient = registrationContract.Email,
                 ViewName = EmailTemplateNames.RegistrationVerification,
-                VerificationLink = 
-                    $"{_senderDomain}{string.Format(GeneralConstants.VerifiyAccountRegistration, registrationContract.UserName, verficationCodeResult.Result.Code)}" 
+                VerificationLink =
+                    $"{_senderDomain}{string.Format(GeneralConstants.VerifiyAccountRegistration, registrationContract.UserName, verficationCodeResult.Result.Code)}"
             });
         }
 
