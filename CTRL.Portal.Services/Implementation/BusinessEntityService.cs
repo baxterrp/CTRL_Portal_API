@@ -19,7 +19,12 @@ namespace CTRL.Portal.Services.Implementation
         private readonly string _senderDomain;
         private readonly IBusinessEntityCodeRepository _accountCodeRepository;
 
-        public BusinessEntityService(IBusinessEntityRepository businessEntityRepository, ICodeService codeService, IEmailProvider emailProvider, IBusinessEntityCodeRepository accountCodeRepository, string senderUrl)
+        public BusinessEntityService(
+            IBusinessEntityRepository businessEntityRepository, 
+            ICodeService codeService, 
+            IEmailProvider emailProvider, 
+            IBusinessEntityCodeRepository accountCodeRepository, 
+            string senderUrl)
         {
             _businessEntityRepository = businessEntityRepository ?? throw new ArgumentNullException(nameof(businessEntityRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
@@ -119,7 +124,6 @@ namespace CTRL.Portal.Services.Implementation
                 Id = Guid.NewGuid().ToString(),
                 BusinessEntityId = accountInvitation.AccountId,
                 CodeId = codeResponse.Result.Id
-
             };
 
             await _accountCodeRepository.SaveAccountCode(accountCode);
