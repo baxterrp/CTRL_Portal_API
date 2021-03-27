@@ -65,6 +65,7 @@ namespace CTRL.Portal.Services.Implementation
 
             var settings = await _userSettingsService.GetUserSettings(user.UserName);
 
+            settings.IsActiveUpdate = true;
             settings.IsActive = true;
 
             await _userSettingsService.SaveSettings(settings);
