@@ -137,7 +137,7 @@ namespace CTRL.Portal.Services.UnitTests
         }
         
         [TestMethod]
-        public async Task ValidateCodeReturnsTrueIfValidCodeReturned()
+        public async Task ValidateCodeReturnsFalseIfNoValidCodeReturned()
         {
             var persistedCode = new PersistedCodeDto
             {
