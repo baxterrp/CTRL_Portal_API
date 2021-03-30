@@ -6,5 +6,6 @@
         public string Theme { get; set; }
         public string DefaultBusinessEntity { get; set; }
         public bool IsActive { get; set; }
+        public bool IsActiveUpdate { get; set; }
     }
 }
