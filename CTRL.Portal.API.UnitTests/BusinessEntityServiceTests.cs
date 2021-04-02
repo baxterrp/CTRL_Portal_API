@@ -1,5 +1,6 @@
 ﻿using CTRL.Portal.Common.Constants;
 using CTRL.Portal.Common.Contracts;
+using CTRL.Portal.Data.DTO;
 using CTRL.Portal.Data.Repositories;
 using CTRL.Portal.Services.Implementation;
 using CTRL.Portal.Services.Interfaces;
@@ -82,6 +83,31 @@ namespace CTRL.Portal.Services.UnitTests
         }
 
         [TestMethod]
+        public async Task CreateSubscriptionCreatesValidSubscriptionDto()
+        {
+            var subscriptionContract = new SubscriptionContract()
+            {
+                BusinessEntityId = "testBusinessEntity",
+                Name = "testName"
+            };
+
+            _mockBusinessEntityRepository.Setup(r => r.CreateSubscription(It.IsAny<SubscriptionDto>()));
+
+            var task = _sut.CreateSubscription(subscriptionContract);
+            await task;
+
+            _mockBusinessEntityRepository.Verify(r => r.CreateSubscription(It.IsAny<SubscriptionDto>()), Times.Once);
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void GetBusinessEntitiesReturnsValidEntities()
+        {
+
+        }
+
+        [TestMethod]
         public void InviteUserThrowsIfAccountInvitationIsNull()
         {
             Func<Task> func = async () => await _sut.InviteUser((BusinessEntityInvititation)null);
@@ -100,6 +126,30 @@ namespace CTRL.Portal.Services.UnitTests
 
             Func<Task> func = async () => await _sut.InviteUser(accountInvitation);
             func.Should().Throw<ArgumentException>().WithMessage("AccountId and Email must not be null or empty (Parameter 'accountInvitation')");
+        }
+
+        [TestMethod]
+        public async Task InviteUserSendsAccountCodeEmail()
+        {
+            var accountCode = new BusinessEntityCode
+            {
+                Id = Guid.NewGuid().ToString(),
+                BusinessEntityId = "testEntityId",
+                CodeId = "testCodeId"
+
+            };
+
+            _mockBusinessEntityCodeRepository.Setup(r => r.SaveAccountCode(accountCode));
+            _mockEmailProvider.Verify(e => e.SendEmail(It.IsAny<EmailContract>()));
+
+            var task = _sut.InviteUser(GetAccountInvitation());
+            await task;
+
+            _mockBusinessEntityCodeRepository.Verify(r => r.SaveAccountCode(accountCode), Times.Once);
+            _mockEmailProvider.Verify(e => e.SendEmail(It.IsAny<EmailContract>()), Times.Once);
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+
         }
 
         [TestMethod]
@@ -138,6 +188,30 @@ namespace CTRL.Portal.Services.UnitTests
             _mockCodeService.Setup(m => m.ValidateCode(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 
             func.Should().Throw<InvalidOperationException>().WithMessage(ApiMessages.InvalidCredentials);
+        }
+
+        [TestMethod]
+        public void AcceptInviteAddsUserToAccount()
+        {
+
+        }
+
+        [TestMethod]
+        public void AcceptInviteUpdatesStatusOfCode()
+        {
+
+        }
+
+        public BusinessEntityInvititation GetAccountInvitation()
+        {
+            BusinessEntityInvititation accountInvitation = new BusinessEntityInvititation()
+            {
+                SenderUserName = "testSenderName",
+                AccountId = "testAccountId",
+                Email = "test@email.com"
+            };
+
+            return accountInvitation;
         }
     }
 }

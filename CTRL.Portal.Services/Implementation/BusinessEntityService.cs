@@ -17,7 +17,7 @@ namespace CTRL.Portal.Services.Implementation
         private readonly ICodeService _codeService;
         private readonly IEmailProvider _emailProvider;
         private readonly string _senderDomain;
-        private readonly IBusinessEntityCodeRepository _accountCodeRepository;
+        private readonly IBusinessEntityCodeRepository _businessEntityCodeRepository;
 
         public BusinessEntityService(IBusinessEntityRepository businessEntityRepository, ICodeService codeService, IEmailProvider emailProvider, IBusinessEntityCodeRepository accountCodeRepository, string senderUrl)
         {
@@ -25,7 +25,7 @@ namespace CTRL.Portal.Services.Implementation
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
             _senderDomain = !string.IsNullOrWhiteSpace(senderUrl) ? senderUrl : throw new ArgumentNullException(nameof(senderUrl));
-            _accountCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
+            _businessEntityCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
         }
 
         public async Task<BusinessEntity> AddBusinessEntity(CreateBusinessEntityContract createAccountContract)
@@ -122,7 +122,7 @@ namespace CTRL.Portal.Services.Implementation
 
             };
 
-            await _accountCodeRepository.SaveAccountCode(accountCode);
+            await _businessEntityCodeRepository.SaveAccountCode(accountCode);
 
             if (tasks.All(t => t?.IsCompletedSuccessfully ?? false))
             {
@@ -153,10 +153,10 @@ namespace CTRL.Portal.Services.Implementation
             {
                 throw new InvalidOperationException(ApiMessages.InvalidCredentials);
             }
-            var accountCode = await _accountCodeRepository.GetAccountCode(acceptInvitation.Code);
+            var accountCode = await _businessEntityCodeRepository.GetAccountCode(acceptInvitation.Code);
 
             var addUserResponse = _businessEntityRepository.AddUserToAccount(acceptInvitation.UserName, accountCode.BusinessEntityId);
-            var codeStatusResponse = _accountCodeRepository.UpdateCodeStatus(accountCode.CodeId);
+            var codeStatusResponse = _businessEntityCodeRepository.UpdateCodeStatus(accountCode.CodeId);
 
             List<Task> tasks = new List<Task>
             {
