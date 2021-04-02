@@ -129,8 +129,29 @@ namespace CTRL.Portal.Services.UnitTests
         }
 
         [TestMethod]
-        public async Task InviteUserSendsAccountCodeEmail()
+        public async Task InviteUserSendsEmail()
         {
+            var invite = new BusinessEntityInvititation
+            {
+                AccountId = Guid.NewGuid().ToString(),
+                Email = "test@test.com",
+                SenderUserName = "testUser"
+            };
+
+            var codeDto = new PersistedCodeDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Code = "ABC123",
+                Email = "test@test.com",
+                Expiration = DateTime.Now.AddDays(1)
+            };
+
+            var businessDto = new BusinessEntityDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "TestBusiness"
+            };
+
             var accountCode = new BusinessEntityCode
             {
                 Id = Guid.NewGuid().ToString(),
@@ -139,17 +160,17 @@ namespace CTRL.Portal.Services.UnitTests
 
             };
 
-            _mockBusinessEntityCodeRepository.Setup(r => r.SaveAccountCode(accountCode));
-            _mockEmailProvider.Verify(e => e.SendEmail(It.IsAny<EmailContract>()));
+            _mockCodeService.Setup(c => c.SaveCode(It.IsAny<string>())).ReturnsAsync(codeDto);
+            _mockBusinessEntityRepository.Setup(b => b.GetAccountById(It.IsAny<string>())).ReturnsAsync(businessDto);
+            _mockBusinessEntityCodeRepository.Setup(b => b.SaveAccountCode(It.IsAny<BusinessEntityCode>()));
+            _mockEmailProvider.Setup(e => e.SendEmail(It.IsAny<EmailContract>()));
 
-            var task = _sut.InviteUser(GetAccountInvitation());
-            await task;
+            await _sut.InviteUser(invite);
 
-            _mockBusinessEntityCodeRepository.Verify(r => r.SaveAccountCode(accountCode), Times.Once);
+            _mockCodeService.Verify(c => c.SaveCode(It.IsAny<string>()), Times.Once);
+            _mockBusinessEntityRepository.Verify(b => b.GetAccountById(It.IsAny<string>()), Times.Once);
+            _mockBusinessEntityCodeRepository.Verify(b => b.SaveAccountCode(It.IsAny<BusinessEntityCode>()), Times.Once);
             _mockEmailProvider.Verify(e => e.SendEmail(It.IsAny<EmailContract>()), Times.Once);
-
-            task.IsCompletedSuccessfully.Should().BeTrue();
-
         }
 
         [TestMethod]
@@ -191,27 +212,36 @@ namespace CTRL.Portal.Services.UnitTests
         }
 
         [TestMethod]
-        public void AcceptInviteAddsUserToAccount()
+        public async Task AcceptInviteAddsUserToAccount()
         {
+            var acceptInvitation = new AcceptInvitation()
+            {
+                Email = "test@test.com",
+                Code = "abc123",
+                UserName = "testUser"
+            };
 
+            var accountCode = new BusinessEntityCode
+            {
+                Id = Guid.NewGuid().ToString(),
+                BusinessEntityId = "testEntityId",
+                CodeId = "testCodeId"
+
+            };
+
+
+            _mockBusinessEntityRepository.Setup(e => e.AddUserToAccount(It.IsAny<string>(), It.IsAny<string>()));
+            _mockCodeService.Setup(m => m.ValidateCode(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
+
+            await _sut.AcceptInvite(acceptInvitation); //cannot get past validating code
+
+            _mockBusinessEntityRepository.Verify(e => e.AddUserToAccount(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
         }
 
         [TestMethod]
         public void AcceptInviteUpdatesStatusOfCode()
         {
 
-        }
-
-        public BusinessEntityInvititation GetAccountInvitation()
-        {
-            BusinessEntityInvititation accountInvitation = new BusinessEntityInvititation()
-            {
-                SenderUserName = "testSenderName",
-                AccountId = "testAccountId",
-                Email = "test@email.com"
-            };
-
-            return accountInvitation;
         }
     }
 }
