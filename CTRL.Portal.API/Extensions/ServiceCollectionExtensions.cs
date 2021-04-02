@@ -37,7 +37,8 @@ namespace CTRL.Portal.API.Extensions
                 sp.GetRequiredService<ICodeService>(),
                 sp.GetRequiredService<IEmailProvider>(),
                 sp.GetRequiredService<IBusinessEntityCodeRepository>(),
-                spaUrl));
+                spaUrl,
+                sp.GetRequiredService<ICodeRepository>()));
 
             services.AddSingleton<IBusinessEntityRepository, BusinessEntityRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();

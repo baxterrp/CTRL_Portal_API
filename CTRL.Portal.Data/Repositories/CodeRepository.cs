@@ -44,5 +44,11 @@ namespace CTRL.Portal.Data.Repositories
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
             await connection.ExecuteAsync(SqlQueries.AddCode, persistCode);
         }
+
+        public async Task UpdateCodeExpiration(string codeId)
+        {
+            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
+            await connection.ExecuteAsync(SqlQueries.UpdateCodeExpiration, new { Id = codeId, Expiration = DateTime.Now.AddHours(-1) }) ;
+        }
     }
 }

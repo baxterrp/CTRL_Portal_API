@@ -7,5 +7,6 @@ namespace CTRL.Portal.Data.Repositories
     {
         Task SaveCode(PersistedCodeDto persistCode);
         Task<PersistedCodeDto> GetCode(string code, string email);
+        Task UpdateCodeExpiration(string codeId);
     }
 }
