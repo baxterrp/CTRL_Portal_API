@@ -9,34 +9,34 @@ using System.Threading.Tasks;
 
 namespace CTRL.Portal.Data.Repositories
 {
-    public class AccountCodeRepository : IAccountCodeRepository
+    public class BusinessEntityCodeRepository : IBusinessEntityCodeRepository
     {
         private readonly DatabaseConfiguration _databaseConfiguration;
 
-        public AccountCodeRepository(DatabaseConfiguration databaseConfiguration)
+        public BusinessEntityCodeRepository(DatabaseConfiguration databaseConfiguration)
         {
             _databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
         }
-        public async Task<AccountCode> GetAccountCode(string code)
+        public async Task<BusinessEntityCode> GetAccountCode(string code)
         {
             try
             {
                 using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
 
-                var accountId = await connection.QuerySingleAsync<AccountCode>(SqlQueries.GetAccountCodeByCodeId, new { Code = code });
+                var accountId = await connection.QuerySingleAsync<BusinessEntityCode>(SqlQueries.GetBussinessEntityCodeByCodeId, new { Code = code });
 
                 return accountId;
             }
             catch
             {
-                throw new ResourceNotFoundException($"No account Id found for {code}");
+                throw new ResourceNotFoundException($"No business Id found for {code}");
             }
         }
 
-        public async Task SaveAccountCode(AccountCode accountCode)
+        public async Task SaveAccountCode(BusinessEntityCode accountCode)
         {
             using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
-            await connection.ExecuteAsync(SqlQueries.AddAccountCode, accountCode);
+            await connection.ExecuteAsync(SqlQueries.AddBusinessEntityCode, accountCode);
         }
 
         public async Task UpdateCodeStatus(string codeId)

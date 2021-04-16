@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace CTRL.Portal.Services.Interfaces
 {
-    public interface IAccountService
+    public interface IBusinessEntityService
     {
-        Task<Account> AddAccount(CreateAccountContract createAccountContract);
-        Task<IEnumerable<Account>> GetAccounts(string userName);
-        Task InviteUser(AccountInvitation accountInvitation);
+        Task<BusinessEntity> AddBusinessEntity(CreateBusinessEntityContract createAccountContract);
+        Task<IEnumerable<BusinessEntity>> GetBusinessEntities(string userName);
+        Task InviteUser(BusinessEntityInvititation accountInvitation);
         Task AcceptInvite(AcceptInvitation acceptInvitation);
         Task CreateSubscription(SubscriptionContract subscriptionContract);
         Task AddModuleToSubscription(AddSubscriptionModuleContract moduleContract);

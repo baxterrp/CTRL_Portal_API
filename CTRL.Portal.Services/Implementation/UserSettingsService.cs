@@ -32,9 +32,16 @@ namespace CTRL.Portal.Services.Implementation
                 throw new ArgumentNullException(nameof(userSettings));
             }
 
-            if(string.IsNullOrWhiteSpace(userSettings.UserName))
+            if (string.IsNullOrWhiteSpace(userSettings.UserName))
             {
                 throw new ArgumentException("Username cannot be null or empty", nameof(userSettings.UserName));
+            }
+
+            if (!userSettings.IsActiveUpdate)
+            {
+                var existingSettings = await _userSettingsRepository.GetUserSettings(userSettings.UserName);
+
+                userSettings.IsActive = existingSettings.IsActive;
             }
 
             await _userSettingsRepository.SaveSettings(userSettings);

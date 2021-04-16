@@ -4,6 +4,8 @@
     {
         public string UserName { get; set; }
         public string Theme { get; set; }
-        public string DefaultAccount { get; set; }
+        public string DefaultBusinessEntity { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsActiveUpdate { get; set; }
     }
 }

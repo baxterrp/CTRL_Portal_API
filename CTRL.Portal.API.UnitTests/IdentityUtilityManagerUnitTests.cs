@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace CTRL.Portal.API.UnitTests
+namespace CTRL.Portal.Services.UnitTests
 {
     [TestClass]
     public class IdentityUtilityManagerUnitTests

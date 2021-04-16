@@ -1,6 +1,6 @@
 ﻿namespace CTRL.Portal.Common.Contracts
 {
-    public class Account
+    public class BusinessEntity
     {
         public string Name { get; set; }
         public string Id { get; set; }

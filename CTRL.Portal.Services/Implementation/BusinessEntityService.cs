@@ -11,34 +11,34 @@ using System.Threading.Tasks;
 
 namespace CTRL.Portal.Services.Implementation
 {
-    public class AccountService : IAccountService
+    public class BusinessEntityService : IBusinessEntityService
     {
-        private readonly IAccountRepository _accountRepository;
+        private readonly IBusinessEntityRepository _businessEntityRepository;
         private readonly ICodeService _codeService;
         private readonly IEmailProvider _emailProvider;
         private readonly string _senderDomain;
-        private readonly IAccountCodeRepository _accountCodeRepository;
+        private readonly IBusinessEntityCodeRepository _accountCodeRepository;
 
-        public AccountService(IAccountRepository accountRepository, ICodeService codeService, IEmailProvider emailProvider, IAccountCodeRepository accountCodeRepository, string senderUrl)
+        public BusinessEntityService(IBusinessEntityRepository businessEntityRepository, ICodeService codeService, IEmailProvider emailProvider, IBusinessEntityCodeRepository accountCodeRepository, string senderUrl)
         {
-            _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+            _businessEntityRepository = businessEntityRepository ?? throw new ArgumentNullException(nameof(businessEntityRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
             _senderDomain = !string.IsNullOrWhiteSpace(senderUrl) ? senderUrl : throw new ArgumentNullException(nameof(senderUrl));
             _accountCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
         }
 
-        public async Task<Account> AddAccount(CreateAccountContract createAccountContract)
+        public async Task<BusinessEntity> AddBusinessEntity(CreateBusinessEntityContract createAccountContract)
         {
             var accountId = Guid.NewGuid().ToString();
 
-            await _accountRepository.AddAccount(createAccountContract.UserName, new AccountDto
+            await _businessEntityRepository.AddBusinessEntity(createAccountContract.UserName, new BusinessEntityDto
             {
                 Id = accountId,
                 Name = createAccountContract.Name
             });
 
-            return new Account
+            return new BusinessEntity
             {
                 Id = accountId,
                 Name = createAccountContract.Name
@@ -52,9 +52,9 @@ namespace CTRL.Portal.Services.Implementation
                 throw new ArgumentNullException(nameof(subscriptionContract));
             }
 
-            if (string.IsNullOrWhiteSpace(subscriptionContract.AccountId))
+            if (string.IsNullOrWhiteSpace(subscriptionContract.BusinessEntityId))
             {
-                throw new ArgumentException("AccountId cannot be null or empty", nameof(subscriptionContract.AccountId));
+                throw new ArgumentException("BusinessEntityId cannot be null or empty", nameof(subscriptionContract.BusinessEntityId));
             }
 
             if (string.IsNullOrWhiteSpace(subscriptionContract.Name))
@@ -67,18 +67,18 @@ namespace CTRL.Portal.Services.Implementation
             var subscriptionDto = new SubscriptionDto
             {
                 Id = subscriptionId,
-                AccountId = subscriptionContract.AccountId,
+                BusinessEntityId = subscriptionContract.BusinessEntityId,
                 Name = subscriptionContract.Name
             };
 
-            await _accountRepository.CreateSubscription(subscriptionDto);
+            await _businessEntityRepository.CreateSubscription(subscriptionDto);
         }
 
-        public async Task<IEnumerable<Account>> GetAccounts(string userName)
+        public async Task<IEnumerable<BusinessEntity>> GetBusinessEntities(string userName)
         {
             try
             {
-                return (await _accountRepository.GetAllAccountsByUser(userName) ?? new List<AccountDto>()).Select(a => new Account
+                return (await _businessEntityRepository.GetAllBusinessEntitiesByUser(userName) ?? new List<BusinessEntityDto>()).Select(a => new BusinessEntity
                 {
                     Id = a.Id,
                     Name = a.Name
@@ -86,11 +86,11 @@ namespace CTRL.Portal.Services.Implementation
             }
             catch
             {
-                return new List<Account>();
+                return new List<BusinessEntity>();
             }
         }
 
-        public async Task InviteUser(AccountInvitation accountInvitation)
+        public async Task InviteUser(BusinessEntityInvititation accountInvitation)
         {
             if (accountInvitation is null)
             {
@@ -104,7 +104,7 @@ namespace CTRL.Portal.Services.Implementation
 
             var codeResponse = _codeService.SaveCode(accountInvitation.Email);
 
-            var accountResponse = _accountRepository.GetAccountById(accountInvitation.AccountId);
+            var accountResponse = _businessEntityRepository.GetAccountById(accountInvitation.AccountId);
 
             List<Task> tasks = new List<Task>
             {
@@ -114,10 +114,10 @@ namespace CTRL.Portal.Services.Implementation
 
             await Task.WhenAll(tasks);
 
-            var accountCode = new AccountCode
+            var accountCode = new BusinessEntityCode
             {
                 Id = Guid.NewGuid().ToString(),
-                AccountId = accountInvitation.AccountId,
+                BusinessEntityId = accountInvitation.AccountId,
                 CodeId = codeResponse.Result.Id
 
             };
@@ -155,7 +155,7 @@ namespace CTRL.Portal.Services.Implementation
             }
             var accountCode = await _accountCodeRepository.GetAccountCode(acceptInvitation.Code);
 
-            var addUserResponse = _accountRepository.AddUserToAccount(acceptInvitation.UserName, accountCode.AccountId);
+            var addUserResponse = _businessEntityRepository.AddUserToAccount(acceptInvitation.UserName, accountCode.BusinessEntityId);
             var codeStatusResponse = _accountCodeRepository.UpdateCodeStatus(accountCode.CodeId);
 
             List<Task> tasks = new List<Task>

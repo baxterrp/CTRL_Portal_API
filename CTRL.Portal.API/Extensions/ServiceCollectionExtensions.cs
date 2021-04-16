@@ -1,12 +1,14 @@
 ﻿using CTRL.Authentication;
 using CTRL.Authentication.Configuration;
 using CTRL.Authentication.Implementation;
+using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.Data.Repositories;
 using CTRL.Portal.Migrations;
 using CTRL.Portal.Services.Configuration;
 using CTRL.Portal.Services.Implementation;
 using CTRL.Portal.Services.Interfaces;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,20 +18,28 @@ namespace CTRL.Portal.API.Extensions
     {
         public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration)
         {
+            var spaUrl = configuration.GetValue<string>("ServiceUrls:Spa");
+
             services.AddTransient<IAuthenticationTokenManager, AuthenticationTokenManager>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>(sp => new AuthenticationService(
+                spaUrl, 
+                sp.GetRequiredService<UserManager<ApplicationUser>>(), 
+                sp.GetRequiredService<ICodeService>(),
+                sp.GetRequiredService<IEmailProvider>(), 
+                sp.GetRequiredService<IAuthenticationTokenManager>(), 
+                sp.GetRequiredService<IBusinessEntityService>(), 
+                sp.GetRequiredService<IUserSettingsService>()));
+
             services.AddScoped<IUserService, UserService>();
 
-            var acceptAccountUrl = configuration.GetValue<string>("ServiceUrls:Spa");
-
-            services.AddScoped<IAccountService, AccountService>(sp => new AccountService(
-                sp.GetRequiredService<IAccountRepository>(), 
+            services.AddScoped<IBusinessEntityService, BusinessEntityService>(sp => new BusinessEntityService(
+                sp.GetRequiredService<IBusinessEntityRepository>(), 
                 sp.GetRequiredService<ICodeService>(),
                 sp.GetRequiredService<IEmailProvider>(),
-                sp.GetRequiredService<IAccountCodeRepository>(),
-                acceptAccountUrl));
+                sp.GetRequiredService<IBusinessEntityCodeRepository>(),
+                spaUrl));
 
-            services.AddSingleton<IAccountRepository, AccountRepository>();
+            services.AddSingleton<IBusinessEntityRepository, BusinessEntityRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();
             services.AddSingleton<IUserSettingsRepository, UserSettingsRepository>();
             services.AddScoped<IEmailProvider, EmailProvider>();
@@ -37,7 +47,7 @@ namespace CTRL.Portal.API.Extensions
             services.AddSingleton<ICodeRepository, CodeRepository>();
             services.AddSingleton<ICodeService, CodeService>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
-            services.AddSingleton<IAccountCodeRepository, AccountCodeRepository>();
+            services.AddSingleton<IBusinessEntityCodeRepository, BusinessEntityCodeRepository>();
 
             return services;
         }

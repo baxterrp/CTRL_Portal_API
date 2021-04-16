@@ -12,9 +12,9 @@ namespace CTRL.Portal.API.Controllers
     [ApiController]
     public class SubscriptionController : ControllerBase
     {
-        private readonly IAccountService _accountService;
+        private readonly IBusinessEntityService _accountService;
 
-        public SubscriptionController(IAccountService accountService)
+        public SubscriptionController(IBusinessEntityService accountService)
         {
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         }

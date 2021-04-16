@@ -7,26 +7,27 @@
             @"IF EXISTS (SELECT * FROM UserSettings WHERE [UserName] = @UserName)
                 UPDATE UserSettings
                     SET [Theme] = @Theme,
-                        [DefaultAccount] = @DefaultAccount
+                        [DefaultBusiness] = @DefaultBusiness,
+                        [IsActive] = @IsActive
                 WHERE [UserName] = @UserName;
             ELSE
-                INSERT INTO UserSettings (UserName, Theme, DefaultAccount) VALUES (@UserName, @Theme, @DefaultAccount)
+                INSERT INTO UserSettings (UserName, Theme, DefaultBusiness, IsActive) VALUES (@UserName, @Theme, @DefaultBusiness, @IsActive)
             ";
-        public static readonly string AddAccountQuery = "INSERT INTO accounts (id, name) VALUES (@Id, @Name)";
-        public static readonly string AddAccountToUser = "INSERT INTO UserAccounts (UserName, AccountId) VALUES (@UserName, @AccountId)";
-        public static readonly string GetAllAccountsQuery =
-            @"SELECT a.Id, a.Name FROM UserAccounts ua 
-	            INNER JOIN Accounts a
-		            ON a.Id = ua.AccountId
+        public static readonly string AddBusinessEntity = "INSERT INTO BusinessEntities (id, name) VALUES (@Id, @Name)";
+        public static readonly string AddBusinessEntityToUser = "INSERT INTO UserBusinessEntities (UserName, BusinessEntityId) VALUES (@UserName, @BusinessEntityId)";
+        public static readonly string GetAllBusinessEntitiesQuery =
+            @"SELECT a.Id, a.Name FROM UserBusinessEntities ua 
+	            INNER JOIN BusinessEntities a
+		            ON a.Id = ua.BusinessEntityId
 		    WHERE UserName = @UserName";
         public static readonly string AddCode = "INSERT INTO Codes(Id, Email, Expiration, Code) VALUES (@Id, @Email, @Expiration, @Code)";
-        public static readonly string GetAccountById = "SELECT * FROM accounts WHERE [Id] = @Id";
+        public static readonly string GetBusinessEntityById = "SELECT * FROM BusinessEntities WHERE [Id] = @Id";
         public static readonly string GetCode = "SELECT * FROM Codes WHERE [Code] = @Code AND [Email] = @Email AND [Expiration] >= GETDATE()";
-        public static readonly string AddAccountCode = 
-            @"INSERT INTO AccountCodes(Id, AccountId, CodeId, Accepted)
-                VALUES (@Id, @AccountId, @CodeId, @Accepted)";
-        public static readonly string GetAccountCodeByCodeId = 
-            @"SELECT * FROM AccountCodes ac
+        public static readonly string AddBusinessEntityCode =
+            @"INSERT INTO BusinessEntityCodes(Id, BusinessEntityId, CodeId, Accepted)
+                VALUES (@Id, @BusinessEntityId, @CodeId, @Accepted)";
+        public static readonly string GetBussinessEntityCodeByCodeId =
+            @"SELECT * FROM BusinessEntityCodes ac
             INNER JOIN Codes c ON c.Id = ac.CodeId WHERE c.code = @Code";
         public static readonly string UpdateCodeStatus = "UPDATE AccountCodes SET Accepted = 'True' WHERE [CodeId] = @CodeId";
         public static string AddSubscription = "INSERT INTO Subscriptions(Id, AccountId, Name) VALUES (@Id, @AccountId, @Name)";
