@@ -3,8 +3,8 @@ using FluentMigrator;
 
 namespace CTRL.Portal.Migrations.Custom
 {
-    [Migration(8)]
-    public class Version8 : Migration
+    [Migration(10)]
+    public class Version10 : Migration
     {
         public override void Down()
         {
