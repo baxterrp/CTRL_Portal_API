@@ -11,5 +11,6 @@ namespace CTRL.Portal.Data.Repositories
         Task<BusinessEntityDto> GetAccountById(string accountId);
         Task AddUserToAccount(string userName, string accountId);
         Task CreateSubscription(SubscriptionDto subscriptionDto);
+        Task AddSubscriptionModule(SubscriptionModuleDto subscriptionModuleDto);
     }
 }
