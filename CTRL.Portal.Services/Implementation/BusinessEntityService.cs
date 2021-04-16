@@ -177,7 +177,7 @@ namespace CTRL.Portal.Services.Implementation
 
             };
 
-            await _accountRepository.AddSubscriptionModule(subscriptiontModuleDto);
+            await _businessEntityRepository.AddSubscriptionModule(subscriptiontModuleDto);
         }
 
         private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract

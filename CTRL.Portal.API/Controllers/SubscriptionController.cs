@@ -12,17 +12,17 @@ namespace CTRL.Portal.API.Controllers
     [ApiController]
     public class SubscriptionController : ControllerBase
     {
-        private readonly IBusinessEntityService _accountService;
+        private readonly IBusinessEntityService _businessEntityService;
 
         public SubscriptionController(IBusinessEntityService accountService)
         {
-            _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
+            _businessEntityService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateSubscription([FromBody]SubscriptionContract subscriptionContract)
         {
-            await _accountService.CreateSubscription(subscriptionContract);
+            await _businessEntityService.CreateSubscription(subscriptionContract);
 
             return Ok();
         }
@@ -30,7 +30,7 @@ namespace CTRL.Portal.API.Controllers
         [HttpPost("addSubscriptionModule")]
         public async Task<IActionResult> AddModule([FromBody]AddSubscriptionModuleContract moduleContract)
         {
-            await _accountService.AddModuleToSubscription(moduleContract);
+            await _businessEntityService.AddModuleToSubscription(moduleContract);
 
             return Ok();
         }
