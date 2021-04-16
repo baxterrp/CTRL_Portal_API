@@ -30,5 +30,7 @@
             INNER JOIN Codes c ON c.Id = ac.CodeId WHERE c.code = @Code";
         public static readonly string UpdateCodeStatus = "UPDATE AccountCodes SET Accepted = 'True' WHERE [CodeId] = @CodeId";
         public static string AddSubscription = "INSERT INTO Subscriptions(Id, AccountId, Name) VALUES (@Id, @AccountId, @Name)";
+        public static string AddModuleToSubscription = @"INSERT INTO SubscriptionModules(Id, ModuleId, SubscriptionId)
+            VALUES (@Id, @ModuleId, @SubscriptionId)";
     }
 }

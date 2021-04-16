@@ -26,5 +26,13 @@ namespace CTRL.Portal.API.Controllers
 
             return Ok();
         }
+
+        [HttpPost("addSubscriptionModule")]
+        public async Task<IActionResult> AddModule([FromBody]AddSubscriptionModuleContract moduleContract)
+        {
+            await _accountService.AddModuleToSubscription(moduleContract);
+
+            return Ok();
+        }
     }
 }

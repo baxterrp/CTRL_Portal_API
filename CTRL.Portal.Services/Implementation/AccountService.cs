@@ -167,6 +167,19 @@ namespace CTRL.Portal.Services.Implementation
             await Task.WhenAll(tasks);
         }
 
+        public async Task AddModuleToSubscription(AddSubscriptionModuleContract moduleContract)
+        {
+            var subscriptiontModuleDto = new SubscriptionModuleDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                SubscriptionId = moduleContract.SubscriptionId,
+                ModuleId = moduleContract.ModuleId
+
+            };
+
+            await _accountRepository.AddSubscriptionModule(subscriptiontModuleDto);
+        }
+
         private AccountInviteEmailContract GetInviteEmail(string sender, string accountName, string email, string code) => new AccountInviteEmailContract
         {
             Header = $"You've been invited to {accountName.ToUpper()}",
