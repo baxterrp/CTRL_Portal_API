@@ -33,12 +33,12 @@ namespace CTRL.Portal.API.Extensions
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IBusinessEntityService, BusinessEntityService>(sp => new BusinessEntityService(
-                sp.GetRequiredService<IBusinessEntityRepository>(), 
+                sp.GetRequiredService<IBusinessEntityRepository>(),
                 sp.GetRequiredService<ICodeService>(),
                 sp.GetRequiredService<IEmailProvider>(),
                 sp.GetRequiredService<IBusinessEntityCodeRepository>(),
-                spaUrl,
-                sp.GetRequiredService<ICodeRepository>()));
+                sp.GetRequiredService<ICodeRepository>(),
+                spaUrl));
 
             services.AddSingleton<IBusinessEntityRepository, BusinessEntityRepository>();
             services.AddSingleton<IUserSettingsService, UserSettingsService>();

@@ -20,7 +20,7 @@ namespace CTRL.Portal.Services.Implementation
         private readonly IBusinessEntityCodeRepository _accountCodeRepository;
         private readonly ICodeRepository _codeRepository;
 
-        public BusinessEntityService(IBusinessEntityRepository businessEntityRepository, ICodeService codeService, IEmailProvider emailProvider, IBusinessEntityCodeRepository accountCodeRepository, string senderUrl, ICodeRepository codeRepository)
+        public BusinessEntityService(IBusinessEntityRepository businessEntityRepository, ICodeService codeService, IEmailProvider emailProvider, IBusinessEntityCodeRepository accountCodeRepository, ICodeRepository codeRepository, string senderUrl)
         {
             _businessEntityRepository = businessEntityRepository ?? throw new ArgumentNullException(nameof(businessEntityRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
