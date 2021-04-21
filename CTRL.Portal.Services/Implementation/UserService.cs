@@ -57,7 +57,7 @@ namespace CTRL.Portal.Services.Implementation
 
             await _emailProvider.SendEmail(GetCodeEmail(email, code));
         }
-
+        
         public async Task ResetPassword(ResetPasswordContract resetPasswordContract)
         {
             ValidateResetPasswordContract(resetPasswordContract);

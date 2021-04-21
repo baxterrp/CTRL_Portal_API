@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BusinessEntityController : ControllerBase

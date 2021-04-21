@@ -11,5 +11,6 @@ namespace CTRL.Portal.Services.Interfaces
         Task InviteUser(BusinessEntityInvititation accountInvitation);
         Task AcceptInvite(AcceptInvitation acceptInvitation);
         Task CreateSubscription(SubscriptionContract subscriptionContract);
+        Task AddModuleToSubscription(AddSubscriptionModuleContract moduleContract);
     }
 }
