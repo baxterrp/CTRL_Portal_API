@@ -197,5 +197,12 @@ namespace CTRL.Portal.Services.Implementation
             SenderUserName = sender,
             SenderUrl = string.Format($"{_senderDomain}{GeneralConstants.AcceptInviteUrl}", code)
         };
+
+        public async Task<IEnumerable<ModuleDto>> GetAllModules()
+        {
+            var allModules = await _businessEntityRepository.GetAllModules();
+            
+            return allModules;
+        }
     }
 }

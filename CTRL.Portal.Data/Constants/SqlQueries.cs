@@ -34,5 +34,6 @@
         public static readonly string UpdateCodeExpiration = "UPDATE Codes SET Expiration = @Expiration WHERE [Id] = @Id";
         public static string AddModuleToSubscription = @"INSERT INTO SubscriptionModules(Id, ModuleId, SubscriptionId)
             VALUES (@Id, @ModuleId, @SubscriptionId)";
+        public static string GetAllModules = "SELECT * FROM Modules";
     }
 }

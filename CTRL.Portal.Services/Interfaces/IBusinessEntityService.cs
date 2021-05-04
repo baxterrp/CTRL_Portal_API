@@ -13,5 +13,6 @@ namespace CTRL.Portal.Services.Interfaces
         Task AcceptInvite(AcceptInvitation acceptInvitation);
         Task<SubscriptionDto> CreateSubscription(SubscriptionContract subscriptionContract);
         Task AddModuleToSubscription(AddSubscriptionModuleContract moduleContract);
+        Task<IEnumerable<ModuleDto>> GetAllModules();
     }
 }

@@ -65,5 +65,14 @@ namespace CTRL.Portal.Data.Repositories
 
             await connection.ExecuteAsync(SqlQueries.AddModuleToSubscription, subscriptionModuleDto);
         }
+
+        public async Task<IEnumerable<ModuleDto>> GetAllModules()
+        {
+            using var connection = new SqlConnection(_databaseConfiguration.ConnectionString);
+
+            var allModules = await connection.QueryAsync<ModuleDto>(SqlQueries.GetAllModules);
+
+            return allModules;
+        }
     }
 }
