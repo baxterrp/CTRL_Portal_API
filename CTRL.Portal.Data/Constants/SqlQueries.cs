@@ -33,5 +33,6 @@
         public static string AddSubscription = "INSERT INTO Subscriptions(Id, BusinessEntityId, Name) VALUES (@Id, @BusinessEntityId, @Name)";
         public static string AddModuleToSubscription = @"INSERT INTO SubscriptionModules(Id, ModuleId, SubscriptionId)
             VALUES (@Id, @ModuleId, @SubscriptionId)";
+        public static string GetAllModules = "SELECT * FROM Modules";
     }
 }

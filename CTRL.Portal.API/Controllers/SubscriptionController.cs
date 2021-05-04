@@ -34,5 +34,13 @@ namespace CTRL.Portal.API.Controllers
 
             return Ok();
         }
+
+        [HttpGet("modules")]
+        public async Task<IActionResult> GetAllModules()
+        {
+            var allModules = await _businessEntityService.GetAllModules();
+
+            return Ok(allModules);
+        }
     }
 }
