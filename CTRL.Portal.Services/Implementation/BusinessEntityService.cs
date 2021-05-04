@@ -45,7 +45,7 @@ namespace CTRL.Portal.Services.Implementation
             };
         }
 
-        public async Task CreateSubscription(SubscriptionContract subscriptionContract)
+        public async Task<SubscriptionDto> CreateSubscription(SubscriptionContract subscriptionContract)
         {
             if (subscriptionContract is null)
             {
@@ -72,6 +72,8 @@ namespace CTRL.Portal.Services.Implementation
             };
 
             await _businessEntityRepository.CreateSubscription(subscriptionDto);
+
+            return subscriptionDto;
         }
 
         public async Task<IEnumerable<BusinessEntity>> GetBusinessEntities(string userName)
