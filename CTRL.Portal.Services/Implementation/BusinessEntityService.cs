@@ -18,14 +18,16 @@ namespace CTRL.Portal.Services.Implementation
         private readonly IEmailProvider _emailProvider;
         private readonly string _senderDomain;
         private readonly IBusinessEntityCodeRepository _businessEntityCodeRepository;
+        private readonly ICodeRepository _codeRepository;
 
-        public BusinessEntityService(IBusinessEntityRepository businessEntityRepository, ICodeService codeService, IEmailProvider emailProvider, IBusinessEntityCodeRepository accountCodeRepository, string senderUrl)
+        public BusinessEntityService(IBusinessEntityRepository businessEntityRepository, ICodeService codeService, IEmailProvider emailProvider, IBusinessEntityCodeRepository accountCodeRepository, ICodeRepository codeRepository, string senderUrl)
         {
             _businessEntityRepository = businessEntityRepository ?? throw new ArgumentNullException(nameof(businessEntityRepository));
             _codeService = codeService ?? throw new ArgumentNullException(nameof(codeService));
             _emailProvider = emailProvider ?? throw new ArgumentNullException(nameof(emailProvider));
             _senderDomain = !string.IsNullOrWhiteSpace(senderUrl) ? senderUrl : throw new ArgumentNullException(nameof(senderUrl));
             _businessEntityCodeRepository = accountCodeRepository ?? throw new ArgumentNullException(nameof(accountCodeRepository));
+            _codeRepository = codeRepository ?? throw new ArgumentNullException(nameof(codeRepository));
         }
 
         public async Task<BusinessEntity> AddBusinessEntity(CreateBusinessEntityContract createAccountContract)
@@ -157,11 +159,13 @@ namespace CTRL.Portal.Services.Implementation
 
             var addUserResponse = _businessEntityRepository.AddUserToAccount(acceptInvitation.UserName, accountCode.BusinessEntityId);
             var codeStatusResponse = _businessEntityCodeRepository.UpdateCodeStatus(accountCode.CodeId);
+            var codeExpirationResponse = _codeRepository.UpdateCodeExpiration(accountCode.CodeId);
 
             List<Task> tasks = new List<Task>
             {
                 addUserResponse,
-                codeStatusResponse
+                codeStatusResponse,
+                codeExpirationResponse
             };
 
             await Task.WhenAll(tasks);
