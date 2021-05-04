@@ -22,9 +22,9 @@ namespace CTRL.Portal.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateSubscription([FromBody]SubscriptionContract subscriptionContract)
         {
-            await _businessEntityService.CreateSubscription(subscriptionContract);
+            var subscriptionDto = await _businessEntityService.CreateSubscription(subscriptionContract);
 
-            return Ok();
+            return Ok(subscriptionDto);
         }
 
         [HttpPost("addSubscriptionModule")]
