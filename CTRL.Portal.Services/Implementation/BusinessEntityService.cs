@@ -73,7 +73,25 @@ namespace CTRL.Portal.Services.Implementation
                 Name = subscriptionContract.Name
             };
 
-            await _businessEntityRepository.CreateSubscription(subscriptionDto);
+            List<Task> tasks = new List<Task>
+            {
+                _businessEntityRepository.CreateSubscription(subscriptionDto)
+            };
+
+            if (subscriptionContract.ModuleIds?.Any() ?? false)
+            {
+                var addModuleTasks = subscriptionContract.ModuleIds.Select(moduleId =>
+                    _businessEntityRepository.AddSubscriptionModule(new SubscriptionModuleDto
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        SubscriptionId = subscriptionId,
+                        ModuleId = moduleId
+                    }));
+
+                tasks.AddRange(addModuleTasks);
+            }
+
+            await Task.WhenAll(tasks);
 
             return subscriptionDto;
         }
@@ -180,7 +198,6 @@ namespace CTRL.Portal.Services.Implementation
                 Id = Guid.NewGuid().ToString(),
                 SubscriptionId = moduleContract.SubscriptionId,
                 ModuleId = moduleContract.ModuleId
-
             };
 
             await _businessEntityRepository.AddSubscriptionModule(subscriptiontModuleDto);
