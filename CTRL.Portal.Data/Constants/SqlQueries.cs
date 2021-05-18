@@ -16,9 +16,11 @@
         public static readonly string AddBusinessEntity = "INSERT INTO BusinessEntities (id, name) VALUES (@Id, @Name)";
         public static readonly string AddBusinessEntityToUser = "INSERT INTO UserBusinessEntities (UserName, BusinessEntityId) VALUES (@UserName, @BusinessEntityId)";
         public static readonly string GetAllBusinessEntitiesQuery =
-            @"SELECT a.Id, a.Name FROM UserBusinessEntities ua 
+            @"SELECT a.Id, a.Name, s.Id as SubscriptionId FROM UserBusinessEntities ua 
 	            INNER JOIN BusinessEntities a
 		            ON a.Id = ua.BusinessEntityId
+                INNER JOIN Subscriptions s
+                    ON s.BusinessEntityId = a.Id
 		    WHERE UserName = @UserName";
         public static readonly string AddCode = "INSERT INTO Codes(Id, Email, Expiration, Code) VALUES (@Id, @Email, @Expiration, @Code)";
         public static readonly string GetBusinessEntityById = "SELECT * FROM BusinessEntities WHERE [Id] = @Id";

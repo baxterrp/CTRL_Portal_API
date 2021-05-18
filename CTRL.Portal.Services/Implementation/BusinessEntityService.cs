@@ -82,10 +82,11 @@ namespace CTRL.Portal.Services.Implementation
         {
             try
             {
-                return (await _businessEntityRepository.GetAllBusinessEntitiesByUser(userName) ?? new List<BusinessEntityDto>()).Select(a => new BusinessEntity
+                return (await _businessEntityRepository.GetAllBusinessEntitiesByUser(userName) ?? new List<BusinessEntityDto>()).Select(business => new BusinessEntity
                 {
-                    Id = a.Id,
-                    Name = a.Name
+                    Id = business.Id,
+                    Name = business.Name,
+                    SubscriptionId = business.SubscriptionId
                 });
             }
             catch
