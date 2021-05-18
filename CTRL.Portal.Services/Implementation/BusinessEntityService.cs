@@ -175,12 +175,26 @@ namespace CTRL.Portal.Services.Implementation
 
         public async Task AddModuleToSubscription(AddSubscriptionModuleContract moduleContract)
         {
+            if (moduleContract is null)
+            {
+                throw new ArgumentNullException(nameof(moduleContract));
+            }
+
+            if (string.IsNullOrWhiteSpace(moduleContract.SubscriptionId))
+            {
+                throw new ArgumentException("SubscriptionId cannot be null or empty", nameof(moduleContract.SubscriptionId));
+            }
+
+            if (string.IsNullOrWhiteSpace(moduleContract.ModuleId))
+            {
+                throw new ArgumentException("ModuleId cannot be null or empty", nameof(moduleContract.ModuleId));
+            }
+
             var subscriptiontModuleDto = new SubscriptionModuleDto
             {
                 Id = Guid.NewGuid().ToString(),
                 SubscriptionId = moduleContract.SubscriptionId,
                 ModuleId = moduleContract.ModuleId
-
             };
 
             await _businessEntityRepository.AddSubscriptionModule(subscriptiontModuleDto);
