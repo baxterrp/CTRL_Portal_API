@@ -120,11 +120,7 @@ namespace CTRL.Portal.Services.Implementation
                     Token = new JwtSecurityTokenHandler().WriteToken(_authenticationTokenManager.GenerateToken(authClaims)),
                     UserName = loginContract.UserName,
                     UserSettings = userSettings,
-                    Businesses = (accountResponse?.IsCompletedSuccessfully ?? false) ? accountResponse.Result.Select(a => new BusinessEntity
-                    {
-                        Id = a.Id,
-                        Name = a.Name
-                    }) : new List<BusinessEntity>()
+                    Businesses = (accountResponse?.IsCompletedSuccessfully ?? false) ? accountResponse.Result : new List<BusinessEntity>()
                 };
             }
 

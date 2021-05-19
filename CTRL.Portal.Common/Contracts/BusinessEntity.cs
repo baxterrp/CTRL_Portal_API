@@ -4,5 +4,6 @@
     {
         public string Name { get; set; }
         public string Id { get; set; }
+        public string SubscriptionId { get; set; }
     }
 }
