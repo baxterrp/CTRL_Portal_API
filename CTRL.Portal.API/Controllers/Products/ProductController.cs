@@ -1,13 +1,15 @@
 ﻿using CTRL.Inventory.Common.Contracts;
 using CTRL.Portal.Services.Interfaces.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace CTRL.Portal.API.Controllers.Products
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;

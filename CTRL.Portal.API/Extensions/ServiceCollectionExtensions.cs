@@ -12,6 +12,7 @@ using CTRL.Portal.Services.Implementation.Products;
 using CTRL.Portal.Services.Interfaces;
 using CTRL.Portal.Services.Interfaces.Products;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,7 +56,11 @@ namespace CTRL.Portal.API.Extensions
             services.AddSingleton<IBusinessEntityCodeRepository, BusinessEntityCodeRepository>();
 
             services.AddSingleton<IProductService, ProductService>();
-            services.AddSingleton<IProductApiProvider, ProductApiProvider>();
+
+            var inventoryUrl = configuration.GetValue<string>("ServiceUrls:Inventory");
+
+            services.AddSingleton<IProductApiProvider, ProductApiProvider>(sp 
+                => new ProductApiProvider(sp.GetRequiredService<IHttpContextAccessor>(), inventoryUrl));
 
             return services;
         }
