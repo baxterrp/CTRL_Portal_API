@@ -18,6 +18,7 @@ namespace CTRL.Portal.Services.UnitTests
         private readonly Mock<IBusinessEntityRepository> _mockBusinessEntityRepository;
         private readonly Mock<IBusinessEntityCodeRepository> _mockBusinessEntityCodeRepository;
         private readonly Mock<ICodeService> _mockCodeService;
+        private readonly Mock<ICodeRepository> _mockCodeRepository;
         private readonly Mock<IEmailProvider> _mockEmailProvider;
         private readonly IBusinessEntityService _sut;
         private static readonly string _senderURL = "./test/";
@@ -26,12 +27,17 @@ namespace CTRL.Portal.Services.UnitTests
         {
             _mockBusinessEntityRepository = new Mock<IBusinessEntityRepository>();
             _mockBusinessEntityCodeRepository = new Mock<IBusinessEntityCodeRepository>();
+            _mockCodeRepository = new Mock<ICodeRepository>();
             _mockCodeService = new Mock<ICodeService>();
             _mockEmailProvider = new Mock<IEmailProvider>();
 
             _sut = new BusinessEntityService(
-                _mockBusinessEntityRepository.Object, _mockCodeService.Object,
-                _mockEmailProvider.Object, _mockBusinessEntityCodeRepository.Object, _senderURL);
+                _mockBusinessEntityRepository.Object, 
+                _mockCodeService.Object,
+                _mockEmailProvider.Object, 
+                _mockBusinessEntityCodeRepository.Object,
+                _mockCodeRepository.Object,
+                _senderURL);
         }
         [TestMethod]
         public async Task AddBusinessEntityReturnsValidBusinessEntity()
@@ -229,11 +235,11 @@ namespace CTRL.Portal.Services.UnitTests
 
             };
 
-
             _mockBusinessEntityRepository.Setup(e => e.AddUserToAccount(It.IsAny<string>(), It.IsAny<string>()));
-            _mockCodeService.Setup(m => m.ValidateCode(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
+            _mockCodeService.Setup(m => m.ValidateCode(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
+            _mockBusinessEntityCodeRepository.Setup(e => e.GetAccountCode(It.IsAny<string>())).ReturnsAsync(new BusinessEntityCode());
 
-            await _sut.AcceptInvite(acceptInvitation); //cannot get past validating code
+            await _sut.AcceptInvite(acceptInvitation);
 
             _mockBusinessEntityRepository.Verify(e => e.AddUserToAccount(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
         }
