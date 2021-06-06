@@ -1,13 +1,18 @@
 ﻿using CTRL.Authentication;
 using CTRL.Authentication.Configuration;
 using CTRL.Authentication.Implementation;
+using CTRL.Inventory.Client.Implementation;
+using CTRL.Inventory.Client.Interfaces;
 using CTRL.Portal.API.EntityContexts;
 using CTRL.Portal.Data.Repositories;
 using CTRL.Portal.Migrations;
 using CTRL.Portal.Services.Configuration;
 using CTRL.Portal.Services.Implementation;
+using CTRL.Portal.Services.Implementation.Products;
 using CTRL.Portal.Services.Interfaces;
+using CTRL.Portal.Services.Interfaces.Products;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +54,13 @@ namespace CTRL.Portal.API.Extensions
             services.AddSingleton<ICodeService, CodeService>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
             services.AddSingleton<IBusinessEntityCodeRepository, BusinessEntityCodeRepository>();
+
+            services.AddSingleton<IProductService, ProductService>();
+
+            var inventoryUrl = configuration.GetValue<string>("ServiceUrls:Inventory");
+
+            services.AddSingleton<IProductApiProvider, ProductApiProvider>(sp 
+                => new ProductApiProvider(sp.GetRequiredService<IHttpContextAccessor>(), inventoryUrl));
 
             return services;
         }
